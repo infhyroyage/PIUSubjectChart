@@ -1,2 +1,2 @@
-# PIUSubjectChar
+# PIUSubjectChart
 Pump It Upでの今日のお題を表示するAndroidアプリケーション
