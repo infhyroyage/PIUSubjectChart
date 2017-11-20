@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">PIUSubjectChart</string>
+    <string name="type">タイプ</string>
+    <string name="type_single">Single (Performance)</string>
+    <string name="type_double">Double (Performance)</string>
+    <string name="type_coop">CO-OP</string>
+    <string name="version">バージョン</string>
+    <string name="version_1st_to_perfect_collection">1st～PERFECT COLLECTION</string>
+    <string name="version_extra_to_prex3">EXTRA～PREX3</string>
+    <string name="version_exceed_to_zero">EXCEED〜ZERO</string>
+    <string name="version_nx_to_nxa">NX〜NXA</string>
+    <string name="version_fiesta_to_fiesta_ex">FIESTA〜FIESTA EX</string>
+    <string name="version_fiesta2">FIESTA2</string>
+    <string name="version_prime">PRIME</string>
+    <string name="version_prime2">PRIME2</string>
 </resources>
