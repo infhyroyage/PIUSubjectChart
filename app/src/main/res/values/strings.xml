@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PIUSubjectChart</string>
+    <string name="difficulty">難易度</string>
+    <string name="range">~</string>
     <string name="type">タイプ</string>
     <string name="type_single">Single (Performance)</string>
     <string name="type_double">Double (Performance)</string>
