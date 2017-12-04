@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">PIUSubjectChart</string>
+    <string name="cancel">キャンセル</string>
+    <string name="current">現在の状態 : %s</string>
     <string name="difficulty">難易度</string>
-    <string name="range">~</string>
-    <string name="type">タイプ</string>
+    <string name="ok">OK</string>
+    <string name="run">お題を出す</string>
+    <string name="type">譜面タイプ</string>
     <string name="type_single">Single (Performance)</string>
     <string name="type_double">Double (Performance)</string>
     <string name="type_coop">CO-OP</string>
