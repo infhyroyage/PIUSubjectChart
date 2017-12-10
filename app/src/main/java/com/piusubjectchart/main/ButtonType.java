@@ -1,9 +1,9 @@
-package com.piusubjectchart;
+package com.piusubjectchart.main;
 
 /**
  * メイン画面のボタンの種類を表す列挙型
  */
-public enum ButtonType {
+enum ButtonType {
     /**
      * 「譜面タイプ」のボタン
      */

@@ -1,10 +1,13 @@
-package com.piusubjectchart;
+package com.piusubjectchart.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import com.piusubjectchart.CommonParams;
+import com.piusubjectchart.R;
 
 import java.util.Arrays;
 
@@ -16,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivity mainActivity;
 
     // 「難易度」のチェック状態
-    public boolean[] difficulty = new boolean[CommonParams.MAX_DIFFICULTY - CommonParams.MIN_DIFFICULTY + 1];
+    boolean[] difficulty = new boolean[CommonParams.MAX_DIFFICULTY - CommonParams.MIN_DIFFICULTY + 1];
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
      * メイン画面の各ボタンの下にあるTextViewのテキストを更新する
      * @param buttonType : 更新するテキストの上にあるボタンのタイプ
      */
-    public void updateTextByCheck(ButtonType buttonType) {
+    void updateTextByCheck(ButtonType buttonType) {
         // ログ出力
         Log.d(TAG, "updateTextByCheck:buttonType" + buttonType);
 

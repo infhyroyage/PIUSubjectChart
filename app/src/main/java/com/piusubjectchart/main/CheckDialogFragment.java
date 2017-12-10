@@ -1,4 +1,4 @@
-package com.piusubjectchart;
+package com.piusubjectchart.main;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,13 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.piusubjectchart.R;
 
 public class CheckDialogFragment extends AppCompatDialogFragment {
     // デバッグ用のタグ
@@ -26,7 +26,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
     // 呼びだされたMainActivityのインスタンス
     private static MainActivity mainActivity;
 
-    public static CheckDialogFragment newInstance(MainActivity mainActivity, ButtonType buttonType, int title) {
+    static CheckDialogFragment newInstance(MainActivity mainActivity, ButtonType buttonType, int title) {
         CheckDialogFragment thisFragment = new CheckDialogFragment();
         CheckDialogFragment.mainActivity = mainActivity;
 
@@ -80,8 +80,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     checkView = inflater.inflate(R.layout.select_checkbox_dialog, (ViewGroup) mainActivity.findViewById(R.id.checkLayout));
                     TableLayout tableLayout = checkView.findViewById(R.id.checkLayout);
 
-                    // MIN_DIFFICULTY〜MAX_DIFFICULTYの個数分だけチェックボックスを生成して格納
-                    final List<CheckBox> checkList = new ArrayList<>();
+                    // MIN_DIFFICULTY〜MAX_DIFFICULTYの個数分だけ1行生成して格納
                     for (int i = 0; i < mainActivity.difficulty.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
@@ -93,26 +92,36 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         textView.setText(String.valueOf(i + 1));
                         row.addView(textView);
 
-                        // CheckBoxの格納
-                        CheckBox checkBox = new CheckBox(mainActivity);
-                        checkBox.setChecked(mainActivity.difficulty[i]);
-                        checkList.add(checkBox);
-                        row.addView(checkBox);
+                        // Switchの格納
+                        Switch s = new Switch(mainActivity);
+                        s.setChecked(mainActivity.difficulty[i]);
+                        final int idx = i;
+                        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                mainActivity.difficulty[idx] = isChecked;
+                            }
+                        });
+                        row.addView(s);
                     }
+
+                    //  「難易度」のON/OFF状態をバックアップ
+                    final boolean[] difficultyBackup = mainActivity.difficulty.clone();
 
                     builder.setView(checkView)
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    // 各チェック状態をMainActivityにセット
-                                    for (int i = 0; i < checkList.size(); i++) {
-                                        mainActivity.difficulty[i] = checkList.get(i).isChecked();
-                                    }
-
                                     // 「難易度」のボタンの下にあるTextViewの文字を更新
                                     mainActivity.updateTextByCheck(ButtonType.DIFFICULTY);
                                 }
-                            }).setNegativeButton(R.string.cancel, null);
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // バックアップしたON/OFFの状態をセット
+                                     mainActivity.difficulty = difficultyBackup.clone();
+                                }
+                    });
 
                     return builder.create();
                 case VERSION:
