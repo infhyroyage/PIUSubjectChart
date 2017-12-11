@@ -3,7 +3,7 @@ package com.piusubjectchart.main;
 /**
  * メイン画面のボタンの種類を表す列挙型
  */
-enum ButtonType {
+enum ButtonKind {
     /**
      * 「譜面タイプ」のボタン
      */

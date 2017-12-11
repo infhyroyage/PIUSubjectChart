@@ -1,21 +1,11 @@
 <resources>
-    <string name="app_name">PIUSubjectChart</string>
+    <string name="app_name">今日のPIUお題</string>
     <string name="cancel">キャンセル</string>
     <string name="current">現在の状態 : %1$s</string>
     <string name="difficulty">難易度</string>
+    <string name="error_all_off">すべてOFF指定は不可能のため、設定がキャンセルされました</string>
     <string name="ok">OK</string>
     <string name="run">お題を出す</string>
     <string name="type">譜面タイプ</string>
-    <string name="type_single">Single (Performance)</string>
-    <string name="type_double">Double (Performance)</string>
-    <string name="type_coop">CO-OP</string>
     <string name="version">バージョン</string>
-    <string name="version_1st_to_perfect_collection">1st～PERFECT COLLECTION</string>
-    <string name="version_extra_to_prex3">EXTRA～PREX3</string>
-    <string name="version_exceed_to_zero">EXCEED〜ZERO</string>
-    <string name="version_nx_to_nxa">NX〜NXA</string>
-    <string name="version_fiesta_to_fiesta_ex">FIESTA〜FIESTA EX</string>
-    <string name="version_fiesta2">FIESTA2</string>
-    <string name="version_prime">PRIME</string>
-    <string name="version_prime2">PRIME2</string>
 </resources>
