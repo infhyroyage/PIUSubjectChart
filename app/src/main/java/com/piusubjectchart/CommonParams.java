@@ -7,7 +7,8 @@ public abstract class CommonParams {
     public static final String[] TYPES = {
             "Single + Single Performance",
             "Double + Double Performance",
-            "CO-OP"};
+            "CO-OP"
+    };
 
     /**
      * 現行稼働の最低難易度
@@ -29,7 +30,15 @@ public abstract class CommonParams {
             "Fiesta〜Fiesta EX",
             "Fiesta2",
             "Prime",
-            "Prime2"};
+            "Prime2"
+    };
+
+    /**
+     * PUMP IT UP (JAPAN) Wikiから取得する、各バージョンのURLの文字列配列
+     */
+    public static final String[] WIKI_URLS = {
+            "http://seesaawiki.jp/piujpn/d/PRIME2"  // PRIME2
+    };
 
     /**
      * MainActivityからDialogFragmentを表示するのに用いるタグ

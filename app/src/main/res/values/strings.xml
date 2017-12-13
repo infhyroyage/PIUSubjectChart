@@ -4,8 +4,10 @@
     <string name="current">現在の状態 : %1$s</string>
     <string name="difficulty">難易度</string>
     <string name="error_all_off">すべてOFF指定は不可能のため、設定がキャンセルされました</string>
+    <string name="error_get_html">HTMLファイルの取得に失敗しました。\nアプリケーション開発者に連絡してください。</string>
     <string name="ok">OK</string>
     <string name="run">お題を出す</string>
+    <string name="run_result">今日のお題は「%1$s」です。</string>
     <string name="type">譜面タイプ</string>
     <string name="version">バージョン</string>
 </resources>

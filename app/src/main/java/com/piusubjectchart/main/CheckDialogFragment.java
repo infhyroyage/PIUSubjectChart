@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.piusubjectchart.CommonParams;
 import com.piusubjectchart.R;
+import com.piusubjectchart.scraping.ScrapingChart;
 
 import java.util.Arrays;
 
@@ -233,15 +234,17 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                     return builder.create();
                 case RUN:
-                    View resultView = inflater.inflate(R.layout.set_switches_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchesLayout));
+                    try {
+                        // お題を取得し、メッセージをセット
+                        builder.setMessage(getString(R.string.run_result, ScrapingChart.get()));
+                    } catch (Exception e) {
+                        // ログ出力
+                        Log.e(TAG, "onCreateDialog->" + e.getClass().toString());
 
-                    builder.setView(resultView)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int which) {
-
-                                }
-                            }).setNegativeButton(R.string.cancel, null);
+                        // HTMLが取得できないエラーメッセージをセット
+                        builder.setMessage(getString(R.string.error_get_html));
+                    }
+                    builder.setPositiveButton(R.string.ok, null);
 
                     return builder.create();
                 default:
