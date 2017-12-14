@@ -11,9 +11,12 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 
 // TODO : 第1型パラメーターには、「バージョン」で選択した状態を表す型名にする
-class ScrapingAsyncTask extends AsyncTask<Void, Void, Document[]> {
+class GettingDocsTask extends AsyncTask<Void, Void, Document[]> {
     // デバッグ用のタグ
-    private static final String TAG = "ScrapingAsyncTask";
+    private static final String TAG = "GettingDocsTask";
+
+    // スマートフォン用WebページをPC用として取得するユーザエージェントの指定
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     /**
      * CommonParams.WIKI_URLSに定義してある、PUMP IT UP (JAPAN) Wikiの各バージョンのURLから、
@@ -27,7 +30,7 @@ class ScrapingAsyncTask extends AsyncTask<Void, Void, Document[]> {
         for (int i = 0; i < CommonParams.WIKI_URLS.length; i++) {
             try {
                 // 各バージョンのURLからHTMLのドキュメントを取得
-                docs[i] = Jsoup.connect(CommonParams.WIKI_URLS[i]).get();
+                docs[i] = Jsoup.connect(CommonParams.WIKI_URLS[i]).userAgent(USER_AGENT).get();
             } catch (IOException e) {
                 // ログ出力
                 Log.e(TAG, "doInBackGround->IOException:i=" + i);
