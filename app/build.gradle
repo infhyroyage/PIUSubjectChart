@@ -6,8 +6,8 @@ android {
         applicationId "com.piusubjectchart"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20171210
-        versionName "20171210"
+        versionCode 20171217
+        versionName "20171217"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
