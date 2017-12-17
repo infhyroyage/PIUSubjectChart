@@ -20,8 +20,9 @@ import android.widget.Toast;
 
 import com.piusubjectchart.CommonParams;
 import com.piusubjectchart.R;
-import com.piusubjectchart.scraping.ScrapingChart;
+import com.piusubjectchart.chart.SubjectChart;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class CheckDialogFragment extends AppCompatDialogFragment {
@@ -236,13 +237,29 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                 case RUN:
                     try {
                         // お題を取得し、メッセージをセット
-                        builder.setMessage(getString(R.string.run_result, ScrapingChart.get()));
+                        builder.setMessage(getString(R.string.run_result, SubjectChart.choice()));
+                    } catch (IOException e) {
+                        switch (SubjectChart.cause) {
+                        case CONNECTION:
+                            // 通信エラーメッセージをセット
+                            builder.setMessage(getString(R.string.error_connection));
+                            break;
+                        case URL:
+                            // URLエラーメッセージをセット
+                            builder.setMessage(getString(R.string.error_url));
+                            break;
+                        case OTHER:
+                        default:
+                            // システムエラーメッセージをセット
+                            builder.setMessage(getString(R.string.error_system));
+                            break;
+                        }
                     } catch (Exception e) {
                         // ログ出力
                         Log.e(TAG, "onCreateDialog->" + e.getClass().toString());
 
-                        // HTMLが取得できないエラーメッセージをセット
-                        builder.setMessage(getString(R.string.error_get_html));
+                        // システムエラーメッセージをセット
+                        builder.setMessage(getString(R.string.error_system));
                     }
                     builder.setPositiveButton(R.string.ok, null);
 
