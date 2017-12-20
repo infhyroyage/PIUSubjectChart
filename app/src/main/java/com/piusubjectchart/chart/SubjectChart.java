@@ -57,13 +57,12 @@ public abstract class SubjectChart {
 
         /*
          * 各シリーズのHTMLドキュメントの中にあるh3タグから、種別が
-         * 「NORMAL」、「REMIX」、「FULL SONG」、「SHORT CUT」のみ取得
+         * 「NORMAL」、「REMIX」、「FULL SONG」、「SHORT CUT」
+         * TODO : 、「PRIME2でプレイ可能になったPRIME JE未収録曲」
+         * を取得
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
-            if (!h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[0])
-                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[1])
-                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[2])
-                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[3])) {
+            if (!isCoincidedTypes(h3)) {
                 continue;
             }
 
@@ -128,6 +127,30 @@ public abstract class SubjectChart {
         }
 
         return chartList;
+    }
+
+    /**
+     * 指定されたh3/h4タグのテキストが、以下のいずれかの文字列と一致するかどうか判別する
+     * なお、英文字の大文字と小文字は区別しない
+     *  ・NORMAL
+     *  ・REMIX
+     *  ・FULL SONG
+     *  ・SHORT CUT
+     * TODO : ・PRIME2でプレイ可能になったPRIME JE未収録曲
+     * @param element : h3/h4タグのインスタンス
+     * @return 一致する場合はtrue、そうではない場合はfalse
+     */
+    private static boolean isCoincidedTypes(Element element) {
+        // 「NORMAL」の一致判定
+        boolean normal = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[0]);
+        // 「REMIX」の一致判定
+        boolean remix = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[1]);
+        // 「FULL SONG」の一致判定
+        boolean fullSong = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[2]);
+        // 「SHORT CUT」の一致判定
+        boolean shortCut = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[3]);
+
+        return normal || remix || fullSong || shortCut;
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする

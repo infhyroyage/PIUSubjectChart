@@ -66,7 +66,6 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
         if (getArguments() == null) {
             throw new IllegalStateException("CheckDialogFragment.getArguments() returns null.");
         }
-        builder.setTitle(getArguments().getInt("Title"));
 
         LayoutInflater inflater = (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater == null) {
@@ -118,6 +117,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean[] stepBackup = CommonParams.step.clone();
 
                     builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -175,6 +175,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean[] difficultyBackup = CommonParams.difficulty.clone();
 
                     builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -232,6 +233,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean[] typeBackup = CommonParams.type.clone();
 
                     builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -289,6 +291,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean[] seriesBackup = CommonParams.series.clone();
 
                     builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -346,6 +349,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean[] categoryBackup = CommonParams.category.clone();
 
                     builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
