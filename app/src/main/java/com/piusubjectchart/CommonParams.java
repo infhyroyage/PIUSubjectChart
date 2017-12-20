@@ -2,17 +2,17 @@ package com.piusubjectchart;
 
 public abstract class CommonParams {
     /**
-     * 譜面のタイプ
+     * 「ステップ」の種類
      */
-    public static final String[] TYPES = {
+    public static final String[] STEPS = {
             "Single + Single Performance",
             "Double + Double Performance",
             "CO-OP"
     };
     /**
-     * 「譜面タイプ」のチェック状態
+     * 「ステップ」のチェック状態
      */
-    public static boolean[] type = new boolean[TYPES.length];
+    public static boolean[] step = new boolean[STEPS.length];
 
     /**
      * 現行稼働の最低難易度
@@ -28,9 +28,23 @@ public abstract class CommonParams {
     public static boolean[] difficulty = new boolean[MAX_DIFFICULTY - MIN_DIFFICULTY + 1];
 
     /**
-     * 歴代バージョン
+     * 「種別」の種類
      */
-    public static final String[] VERSIONS = {
+    public static final String[] TYPES = {
+            "Normal",
+            "Remix",
+            "Full Song",
+            "Short Cut"
+    };
+    /**
+     * 「種別」のチェック状態
+     */
+    public static boolean[] type = new boolean[TYPES.length];
+
+    /**
+     * 「シリーズ」の種類
+     */
+    public static final String[] SERIES = {
             "1st～Perfect Collection",
             "Extra～PREX3",
             "Exceed〜Zero",
@@ -41,12 +55,27 @@ public abstract class CommonParams {
             "Prime2"
     };
     /**
-     * 「バージョン」のチェック状態
+     * 「シリーズ」のチェック状態
      */
-    public static boolean[] version = new boolean[VERSIONS.length];
+    public static boolean[] series = new boolean[SERIES.length];
 
     /**
-     * PUMP IT UP (JAPAN) Wikiから取得する、各バージョンのURLの文字列配列
+     * 「カテゴリー」の種類
+     */
+    public static final String[] CATEGORIES = {
+            "Original",
+            "K-POP",
+            "World Music",
+            "XROSS",
+            "J-Music"
+    };
+    /**
+     * 「カテゴリー」のチェック状態
+     */
+    public static boolean[] category = new boolean[CATEGORIES.length];
+
+    /**
+     * PUMP IT UP (JAPAN) Wikiから取得する、各シリーズのURLの文字列配列
      */
     public static final String[] WIKI_URLS = {
             "http://seesaawiki.jp/piujpn/d/PRIME2"  // PRIME2

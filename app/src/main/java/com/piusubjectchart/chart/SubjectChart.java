@@ -1,26 +1,44 @@
 package com.piusubjectchart.chart;
 
+import com.piusubjectchart.CommonParams;
+import com.piusubjectchart.GettingHTMLError;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public abstract class SubjectChart {
+    // デバッグ用のタグ
+    private static final String TAG = "SubjectChart";
+
     // TODO : デバッグ用の文字列
     private static String debugStr = "";
 
-    // 各バージョンのHTMLドキュメント取得時の失敗原因
+    /**
+     * GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した原因
+     * choiceメソッドでIOExceptionがスローされた場合に値が格納される
+     */
     public static GettingHTMLError cause;
 
+    /**
+     * 今日のお題を出す
+     * @return 今日のお題の譜面を表した文字列
+     * @throws InterruptedException : GettingHTMLsTask.executeメソッドでエラーが発生した場合
+     * @throws ExecutionException : GettingHTMLsTask.executeメソッドでエラーが発生した場合
+     * @throws IOException : GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した場合
+     */
     public static String choice() throws InterruptedException, ExecutionException, IOException {
-        // 各バージョンのHTMLドキュメントを取得
+        // 各シリーズのHTMLドキュメントを取得
         // NOTE : Androidで通信を行うメソッドは別スレッドで行う必要がある
         Document[] docs = new GettingHTMLsTask().execute().get();
         if (docs == null) throw new IOException();
 
-        // TODO : 各バージョンのHTMLドキュメントをスクレイピングして、譜面リストを取得
+        // TODO : 各シリーズのHTMLドキュメントをスクレイピングして、譜面リストを取得
         for (Document doc : docs) {
             scrapeFromDocument(doc);
         }
@@ -28,16 +46,24 @@ public abstract class SubjectChart {
         return debugStr;
     }
 
-    private static void scrapeFromDocument(Document doc) {
+    /**
+     * あるシリーズのHTMLドキュメントから、そのシリーズの譜面リストを生成する
+     * @param doc : あるシリーズのHTMLドキュメント
+     * @return 上記シリーズの譜面リスト
+     */
+    private static List<UnitChart> scrapeFromDocument(Document doc) {
+        // 譜面リストを生成
+        List<UnitChart> chartList = new ArrayList<>();
+
         /*
-         * 各バージョンのHTMLドキュメントの中にあるh3タグから、曲種別が
+         * 各シリーズのHTMLドキュメントの中にあるh3タグから、種別が
          * 「NORMAL」、「REMIX」、「FULL SONG」、「SHORT CUT」のみ取得
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
-            if (!h3.text().trim().equals("NORMAL")
-                    && !h3.text().trim().equals("REMIX")
-                    && !h3.text().trim().equals("FULL SONG")
-                    && !h3.text().trim().equals("SHORT CUT")) {
+            if (!h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[0])
+                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[1])
+                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[2])
+                    && !h3.text().trim().equalsIgnoreCase(CommonParams.TYPES[3])) {
                 continue;
             }
 
@@ -53,7 +79,7 @@ public abstract class SubjectChart {
                 /*
                  * 同階層のタグの最初の子供の最初の子供のタグを取得し、
                  * h4タグならカテゴリーが変化するのでそれを抽出、
-                 * h3タグなら次の曲種別となるのでbreakする
+                 * h3タグなら次の種別となるのでbreakする
                  */
                 Element divHeader = divIdx.child(0).child(0);
                 if (divHeader.tagName().equals("h4")) {
@@ -100,6 +126,8 @@ public abstract class SubjectChart {
             }
             debugStr += "----------\n";
         }
+
+        return chartList;
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする

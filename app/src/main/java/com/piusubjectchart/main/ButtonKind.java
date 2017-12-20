@@ -5,9 +5,9 @@ package com.piusubjectchart.main;
  */
 enum ButtonKind {
     /**
-     * 「譜面タイプ」のボタン
+     * 「ステップ」のボタン
      */
-    TYPE,
+    STEP,
 
     /**
      * 「難易度」のボタン
@@ -15,9 +15,19 @@ enum ButtonKind {
     DIFFICULTY,
 
     /**
-     * 「バージョン」のボタン
+     * 「種別」のボタン
      */
-    VERSION,
+    TYPE,
+
+    /**
+     * 「シリーズ」のボタン
+     */
+    SERIES,
+
+    /**
+     * 「カテゴリー」のボタン
+     */
+    CATEGORY,
 
     /**
      * 「お題を出す」のボタン

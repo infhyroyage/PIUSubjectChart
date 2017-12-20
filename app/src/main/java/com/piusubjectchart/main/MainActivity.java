@@ -28,19 +28,21 @@ public class MainActivity extends AppCompatActivity {
         // MainActivityのインスタンス
         mainActivity = this;
         // チェック状態を初期化
-        Arrays.fill(CommonParams.type, true);
+        Arrays.fill(CommonParams.step, true);
         Arrays.fill(CommonParams.difficulty, true);
-        Arrays.fill(CommonParams.version, true);
+        Arrays.fill(CommonParams.type, true);
+        Arrays.fill(CommonParams.series, true);
+        Arrays.fill(CommonParams.category, true);
 
-        // 「譜面タイプ」のボタンにリスナーをセット
-        findViewById(R.id.buttonType).setOnClickListener(new View.OnClickListener() {
+        // 「ステップ」のボタンにリスナーをセット
+        findViewById(R.id.buttonStep).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckDialogFragment.newInstance(mainActivity, ButtonKind.TYPE, R.string.type).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                CheckDialogFragment.newInstance(mainActivity, ButtonKind.STEP, R.string.step).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
             }
         });
-        // 「譜面タイプ」の下にあるテキストを更新
-        updateTextByCheck(ButtonKind.TYPE);
+        // 「ステップ」の下にあるテキストを更新
+        updateTextByCheck(ButtonKind.STEP);
 
         // 「難易度」のボタンにリスナーをセット
         findViewById(R.id.buttonDifficulty).setOnClickListener(new View.OnClickListener() {
@@ -52,15 +54,35 @@ public class MainActivity extends AppCompatActivity {
         // 「難易度」の下にあるテキストを更新
         updateTextByCheck(ButtonKind.DIFFICULTY);
 
-        // 「バージョン」のボタンにリスナーをセット
-        findViewById(R.id.buttonVersion).setOnClickListener(new View.OnClickListener() {
+        // 「タイプ」のボタンにリスナーをセット
+        findViewById(R.id.buttonType).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckDialogFragment.newInstance(mainActivity, ButtonKind.VERSION, R.string.version).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                CheckDialogFragment.newInstance(mainActivity, ButtonKind.TYPE, R.string.type).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
             }
         });
-        // 「バージョン」の下にあるテキストを更新
-        updateTextByCheck(ButtonKind.VERSION);
+        // 「タイプ」の下にあるテキストを更新
+        updateTextByCheck(ButtonKind.TYPE);
+
+        // 「シリーズ」のボタンにリスナーをセット
+        findViewById(R.id.buttonSeries).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckDialogFragment.newInstance(mainActivity, ButtonKind.SERIES, R.string.series).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+            }
+        });
+        // 「シリーズ」の下にあるテキストを更新
+        updateTextByCheck(ButtonKind.SERIES);
+
+        // 「カテゴリー」のボタンにリスナーをセット
+        findViewById(R.id.buttonCategory).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckDialogFragment.newInstance(mainActivity, ButtonKind.CATEGORY, R.string.category).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+            }
+        });
+        // 「カテゴリー」の下にあるテキストを更新
+        updateTextByCheck(ButtonKind.CATEGORY);
 
         // 「お題を出す」のボタンにリスナーをセット
         findViewById(R.id.buttonRun).setOnClickListener(new View.OnClickListener() {
@@ -83,19 +105,19 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder textBuilder = new StringBuilder();
 
         switch (buttonKind) {
-            case TYPE:
+            case STEP:
                 // 更新後のテキスト文字列をセット
-                for (int i = 0; i < CommonParams.type.length; i++) {
-                    if (CommonParams.type[i]) {
+                for (int i = 0; i < CommonParams.step.length; i++) {
+                    if (CommonParams.step[i]) {
                         if (!textBuilder.toString().equals("")) {
                             textBuilder.append(", ");
                         }
-                        textBuilder.append(CommonParams.TYPES[i]);
+                        textBuilder.append(CommonParams.STEPS[i]);
                     }
                 }
 
                 // TextViewにセット
-                ((TextView)findViewById(R.id.textViewType)).setText(getString(R.string.current, textBuilder.toString()));
+                ((TextView)findViewById(R.id.textViewStep)).setText(getString(R.string.current, textBuilder.toString()));
                 break;
             case DIFFICULTY:
                 // 更新後のテキスト文字列をセット
@@ -111,19 +133,47 @@ public class MainActivity extends AppCompatActivity {
                 // TextViewにセット
                 ((TextView)findViewById(R.id.textViewDifficulty)).setText(getString(R.string.current, textBuilder.toString()));
                 break;
-            case VERSION:
+            case TYPE:
                 // 更新後のテキスト文字列をセット
-                for (int i = 0; i < CommonParams.version.length; i++) {
-                    if (CommonParams.version[i]) {
+                for (int i = 0; i < CommonParams.type.length; i++) {
+                    if (CommonParams.type[i]) {
                         if (!textBuilder.toString().equals("")) {
                             textBuilder.append(", ");
                         }
-                        textBuilder.append(CommonParams.VERSIONS[i]);
+                        textBuilder.append(CommonParams.TYPES[i]);
                     }
                 }
 
                 // TextViewにセット
-                ((TextView)findViewById(R.id.textViewVersion)).setText(getString(R.string.current, textBuilder.toString()));
+                ((TextView)findViewById(R.id.textViewType)).setText(getString(R.string.current, textBuilder.toString()));
+                break;
+            case SERIES:
+                // 更新後のテキスト文字列をセット
+                for (int i = 0; i < CommonParams.series.length; i++) {
+                    if (CommonParams.series[i]) {
+                        if (!textBuilder.toString().equals("")) {
+                            textBuilder.append(", ");
+                        }
+                        textBuilder.append(CommonParams.SERIES[i]);
+                    }
+                }
+
+                // TextViewにセット
+                ((TextView)findViewById(R.id.textViewSeries)).setText(getString(R.string.current, textBuilder.toString()));
+                break;
+            case CATEGORY:
+                // 更新後のテキスト文字列をセット
+                for (int i = 0; i < CommonParams.category.length; i++) {
+                    if (CommonParams.category[i]) {
+                        if (!textBuilder.toString().equals("")) {
+                            textBuilder.append(", ");
+                        }
+                        textBuilder.append(CommonParams.CATEGORIES[i]);
+                    }
+                }
+
+                // TextViewにセット
+                ((TextView)findViewById(R.id.textViewCategory)).setText(getString(R.string.current, textBuilder.toString()));
                 break;
             default:
                 throw new IllegalArgumentException("The ButtonKind argument cannot be applied.");

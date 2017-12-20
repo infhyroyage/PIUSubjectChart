@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.piusubjectchart.CommonParams;
+import com.piusubjectchart.GettingHTMLError;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -12,7 +13,6 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-// TODO : 第1型パラメーターには、「バージョン」で選択した状態を表す型名にする
 class GettingHTMLsTask extends AsyncTask<Void, Void, Document[]> {
     // デバッグ用のタグ
     private static final String TAG = "GettingHTMLsTask";
