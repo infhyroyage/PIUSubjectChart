@@ -9,15 +9,23 @@ public abstract class CommonParams {
             "Double + Double Performance",
             "CO-OP"
     };
+    /**
+     * 「譜面タイプ」のチェック状態
+     */
+    public static boolean[] type = new boolean[TYPES.length];
 
     /**
      * 現行稼働の最低難易度
      */
-    public static final int MIN_DIFFICULTY = 1;
+    private static final int MIN_DIFFICULTY = 1;
     /**
      * 現行稼働の最高難易度
      */
-    public static final int MAX_DIFFICULTY = 28;
+    private static final int MAX_DIFFICULTY = 28;
+    /**
+     * 「難易度」のチェック状態
+     */
+    public static boolean[] difficulty = new boolean[MAX_DIFFICULTY - MIN_DIFFICULTY + 1];
 
     /**
      * 歴代バージョン
@@ -32,6 +40,10 @@ public abstract class CommonParams {
             "Prime",
             "Prime2"
     };
+    /**
+     * 「バージョン」のチェック状態
+     */
+    public static boolean[] version = new boolean[VERSIONS.length];
 
     /**
      * PUMP IT UP (JAPAN) Wikiから取得する、各バージョンのURLの文字列配列

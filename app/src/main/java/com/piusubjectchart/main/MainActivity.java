@@ -18,13 +18,6 @@ public class MainActivity extends AppCompatActivity {
     // MainActivityのインスタンス
     private MainActivity mainActivity;
 
-    // 「譜面タイプ」のチェック状態
-    boolean[] type = new boolean[CommonParams.TYPES.length];
-    // 「難易度」のチェック状態
-    boolean[] difficulty = new boolean[CommonParams.MAX_DIFFICULTY - CommonParams.MIN_DIFFICULTY + 1];
-    // 「バージョン」のチェック状態
-    boolean[] version = new boolean[CommonParams.VERSIONS.length];
-
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -35,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         // MainActivityのインスタンス
         mainActivity = this;
         // チェック状態を初期化
-        Arrays.fill(type, true);
-        Arrays.fill(difficulty, true);
-        Arrays.fill(version, true);
+        Arrays.fill(CommonParams.type, true);
+        Arrays.fill(CommonParams.difficulty, true);
+        Arrays.fill(CommonParams.version, true);
 
         // 「譜面タイプ」のボタンにリスナーをセット
         findViewById(R.id.buttonType).setOnClickListener(new View.OnClickListener() {
@@ -92,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
         switch (buttonKind) {
             case TYPE:
                 // 更新後のテキスト文字列をセット
-                for (int i = 0; i < type.length; i++) {
-                    if (type[i]) {
+                for (int i = 0; i < CommonParams.type.length; i++) {
+                    if (CommonParams.type[i]) {
                         if (!textBuilder.toString().equals("")) {
                             textBuilder.append(", ");
                         }
@@ -106,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case DIFFICULTY:
                 // 更新後のテキスト文字列をセット
-                for (int i = 0; i < difficulty.length; i++) {
-                    if (difficulty[i]) {
+                for (int i = 0; i < CommonParams.difficulty.length; i++) {
+                    if (CommonParams.difficulty[i]) {
                         if (!textBuilder.toString().equals("")) {
                             textBuilder.append(",");
                         }
@@ -120,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case VERSION:
                 // 更新後のテキスト文字列をセット
-                for (int i = 0; i < version.length; i++) {
-                    if (version[i]) {
+                for (int i = 0; i < CommonParams.version.length; i++) {
+                    if (CommonParams.version[i]) {
                         if (!textBuilder.toString().equals("")) {
                             textBuilder.append(", ");
                         }
