@@ -1,4 +1,4 @@
-package com.piusubjectchart;
+package com.subject.piu;
 
 public enum GettingHTMLError {
     // 通信エラー

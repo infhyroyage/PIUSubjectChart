@@ -18,7 +18,7 @@ android {
     }
     lintOptions {
         disable 'GoogleAppIndexingWarning'
-        baseline file("lint-baseline.xml") // your choice of filename/path here
+        baseline file("lint-baseline.xml") // your run of filename/path here
     }
 }
 

@@ -1,4 +1,4 @@
-package com.piusubjectchart.main;
+package com.subject.piu.main;
 
 /**
  * メイン画面のボタンの種類を表す列挙型
@@ -28,6 +28,11 @@ enum ButtonKind {
      * 「カテゴリー」のボタン
      */
     CATEGORY,
+
+    /**
+     * 「その他」のボタン
+     */
+    OTHER,
 
     /**
      * 「お題を出す」のボタン

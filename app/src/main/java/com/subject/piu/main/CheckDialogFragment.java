@@ -1,4 +1,4 @@
-package com.piusubjectchart.main;
+package com.subject.piu.main;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,9 +18,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.piusubjectchart.CommonParams;
-import com.piusubjectchart.R;
-import com.piusubjectchart.chart.SubjectChart;
+import com.subject.piu.CommonParams;
+import com.subject.R;
+import com.subject.piu.chart.Chooser;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -80,6 +80,9 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
             // ログ出力
             Log.d(TAG, "onCreateDialog:buttonKind=" + buttonKind);
 
+            // チェック状態のバックアップ
+            final boolean[] backup;
+
             switch (buttonKind) {
                 case STEP:
                     // TableLayoutの取得
@@ -114,7 +117,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     }
 
                     //  「ステップ」のON/OFF状態をバックアップ
-                    final boolean[] stepBackup = CommonParams.step.clone();
+                    backup = CommonParams.step.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -124,7 +127,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                     if (Arrays.equals(CommonParams.step, new boolean[CommonParams.step.length])) {
                                         // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.step = stepBackup.clone();
+                                        CommonParams.step = backup.clone();
                                     } else {
                                         // 上記以外の場合は、「難易度」のボタンの下にあるTextViewの文字を更新
                                         mainActivity.updateTextByCheck(ButtonKind.STEP);
@@ -134,7 +137,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.step = stepBackup.clone();
+                            CommonParams.step = backup.clone();
                         }
                     });
 
@@ -172,7 +175,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     }
 
                     //  「難易度」のON/OFF状態をバックアップ
-                    final boolean[] difficultyBackup = CommonParams.difficulty.clone();
+                    backup = CommonParams.difficulty.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -182,7 +185,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                     if (Arrays.equals(CommonParams.difficulty, new boolean[CommonParams.difficulty.length])) {
                                         // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.difficulty = difficultyBackup.clone();
+                                        CommonParams.difficulty = backup.clone();
                                     } else {
                                         // 上記以外の場合は、「難易度」のボタンの下にあるTextViewの文字を更新
                                         mainActivity.updateTextByCheck(ButtonKind.DIFFICULTY);
@@ -192,7 +195,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     // バックアップしたON/OFFの状態をセット
-                                     CommonParams.difficulty = difficultyBackup.clone();
+                                     CommonParams.difficulty = backup.clone();
                                 }
                     });
 
@@ -230,7 +233,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     }
 
                     //  「タイプ」のON/OFF状態をバックアップ
-                    final boolean[] typeBackup = CommonParams.type.clone();
+                    backup = CommonParams.type.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -240,7 +243,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                     if (Arrays.equals(CommonParams.type, new boolean[CommonParams.type.length])) {
                                         // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.type = typeBackup.clone();
+                                        CommonParams.type = backup.clone();
                                     } else {
                                         // 上記以外の場合は、「シリーズ」のボタンの下にあるTextViewの文字を更新
                                         mainActivity.updateTextByCheck(ButtonKind.TYPE);
@@ -250,7 +253,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.type = typeBackup.clone();
+                            CommonParams.type = backup.clone();
                         }
                     });
 
@@ -288,7 +291,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     }
 
                     //  「シリーズ」のON/OFF状態をバックアップ
-                    final boolean[] seriesBackup = CommonParams.series.clone();
+                    backup = CommonParams.series.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -298,7 +301,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                     if (Arrays.equals(CommonParams.series, new boolean[CommonParams.series.length])) {
                                         // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.series = seriesBackup.clone();
+                                        CommonParams.series = backup.clone();
                                     } else {
                                         // 上記以外の場合は、「シリーズ」のボタンの下にあるTextViewの文字を更新
                                         mainActivity.updateTextByCheck(ButtonKind.SERIES);
@@ -308,7 +311,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.series = seriesBackup.clone();
+                            CommonParams.series = backup.clone();
                         }
                     });
 
@@ -346,7 +349,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     }
 
                     //  「カテゴリー」のON/OFF状態をバックアップ
-                    final boolean[] categoryBackup = CommonParams.category.clone();
+                    backup = CommonParams.category.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -356,7 +359,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                                     if (Arrays.equals(CommonParams.category, new boolean[CommonParams.category.length])) {
                                         // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.category = categoryBackup.clone();
+                                        CommonParams.category = backup.clone();
                                     } else {
                                         // 上記以外の場合は、「カテゴリー」のボタンの下にあるTextViewの文字を更新
                                         mainActivity.updateTextByCheck(ButtonKind.CATEGORY);
@@ -366,7 +369,53 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.category = categoryBackup.clone();
+                            CommonParams.category = backup.clone();
+                        }
+                    });
+
+                    return builder.create();
+                case OTHER:
+                    // TableLayoutの取得
+                    switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
+                    tableLayout = switchesView.findViewById(R.id.switchingLayout);
+
+                    // 「その他」の個数分だけ1行生成して格納
+                    for (int i = 0; i < CommonParams.other.length; i++) {
+                        // TableRowの格納
+                        TableRow row = new TableRow(mainActivity);
+                        row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
+                        tableLayout.addView(row, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                        // TextViewの格納
+                        TextView textView = new TextView(mainActivity);
+                        textView.setText(CommonParams.OTHERS[i]);
+                        textView.setPadding((int) (20 * dp), 0, 0, 0);
+                        row.addView(textView, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                        // Switchの格納
+                        Switch s = new Switch(mainActivity);
+                        s.setChecked(CommonParams.other[i]);
+                        s.setPadding(0, 0, (int) (20 * dp), 0);
+                        final int idx = i;
+                        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                CommonParams.other[idx] = isChecked;
+                            }
+                        });
+                        row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                    }
+
+                    //  「その他」のON/OFF状態をバックアップ
+                    backup = CommonParams.other.clone();
+
+                    builder.setView(switchesView)
+                            .setTitle(getArguments().getInt("Title"))
+                            .setPositiveButton(R.string.ok, null).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // バックアップしたON/OFFの状態をセット
+                            CommonParams.other = backup.clone();
                         }
                     });
 
@@ -374,9 +423,9 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                 case RUN:
                     try {
                         // お題を取得し、メッセージをセット
-                        builder.setMessage(getString(R.string.run_result, SubjectChart.choice()));
+                        builder.setMessage(getString(R.string.run_result, Chooser.run()));
                     } catch (IOException e) {
-                        switch (SubjectChart.cause) {
+                        switch (Chooser.cause) {
                         case CONNECTION:
                             // 通信エラーメッセージをセット
                             builder.setMessage(getString(R.string.error_connection));

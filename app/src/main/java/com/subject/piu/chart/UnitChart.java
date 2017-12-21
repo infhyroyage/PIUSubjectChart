@@ -1,26 +1,18 @@
-package com.piusubjectchart.chart;
+package com.subject.piu.chart;
 
 class UnitChart {
-    /**
-     * 曲名
-     */
+    // 曲名
     private String name;
 
-    /**
-     * COOPのフラグ
-     * trueの場合はisDoubleの値を見ない
-     */
+    // COOPのフラグ
+    // trueの場合はisDoubleの値を見ない
     private boolean isCoop;
 
-    /**
-     * Single/Doubleのフラグ
-     */
+    //SingleとDoubleのフラグ
     private boolean isDouble;
 
-    /**
-     * 難易度
-     * isCoopがtrueの場合は見ない
-     */
+    // 難易度
+    // isCoopがtrueの場合は見ない
     private int difficulty;
 
     UnitChart(String name, boolean isCoop, boolean isDouble, int difficulty) {

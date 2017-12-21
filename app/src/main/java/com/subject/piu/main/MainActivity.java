@@ -1,4 +1,4 @@
-package com.piusubjectchart.main;
+package com.subject.piu.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.piusubjectchart.CommonParams;
-import com.piusubjectchart.R;
+import com.subject.piu.CommonParams;
+import com.subject.R;
 
 import java.util.Arrays;
 
@@ -83,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
         });
         // 「カテゴリー」の下にあるテキストを更新
         updateTextByCheck(ButtonKind.CATEGORY);
+
+        // 「その他」のボタンにリスナーをセット
+        findViewById(R.id.buttonOther).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckDialogFragment.newInstance(mainActivity, ButtonKind.OTHER, R.string.other).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+            }
+        });
 
         // 「お題を出す」のボタンにリスナーをセット
         findViewById(R.id.buttonRun).setOnClickListener(new View.OnClickListener() {

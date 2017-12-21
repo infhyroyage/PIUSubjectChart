@@ -1,10 +1,10 @@
-package com.piusubjectchart.chart;
+package com.subject.piu.chart;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.piusubjectchart.CommonParams;
-import com.piusubjectchart.GettingHTMLError;
+import com.subject.piu.CommonParams;
+import com.subject.piu.GettingHTMLError;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -35,18 +35,18 @@ class GettingHTMLsTask extends AsyncTask<Void, Void, Document[]> {
                 docs[i] = Jsoup.connect(CommonParams.WIKI_URLS[i]).userAgent(USER_AGENT).get();
             } catch (UnknownHostException e) {
                 // オフラインのため通信できない
-                SubjectChart.cause = GettingHTMLError.CONNECTION;
+                Chooser.cause = GettingHTMLError.CONNECTION;
                 return null;
             } catch (HttpStatusException e) {
                 // URLが誤っているため通信できない
-                SubjectChart.cause = GettingHTMLError.URL;
+                Chooser.cause = GettingHTMLError.URL;
                 return null;
             } catch (IOException e) {
                 // ログ出力
                 Log.e(TAG, "doInBackGround->" + e.getClass().toString() + ":i=" + i);
 
                 // システムエラー
-                SubjectChart.cause = GettingHTMLError.OTHER;
+                Chooser.cause = GettingHTMLError.OTHER;
                 return null;
             }
         }

@@ -1,4 +1,4 @@
-package com.piusubjectchart;
+package com.subject.piu;
 
 public abstract class CommonParams {
     /**
@@ -73,6 +73,18 @@ public abstract class CommonParams {
      * 「カテゴリー」のチェック状態
      */
     public static boolean[] category = new boolean[CATEGORIES.length];
+
+    /**
+     * 「その他」の種類
+     */
+    public static final String[] OTHERS = {
+            "PP解禁譜面を含む",
+            "AM.PASS使用時限定譜面を含む"
+    };
+    /**
+     * 「その他」のチェック状態
+     */
+    public static boolean[] other = new boolean[OTHERS.length];
 
     /**
      * PUMP IT UP (JAPAN) Wikiから取得する、各シリーズのURLの文字列配列
