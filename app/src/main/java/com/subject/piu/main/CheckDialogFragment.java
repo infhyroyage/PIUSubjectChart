@@ -37,9 +37,9 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
     /**
      * このクラスのインスタンスの初期化を行い、それを返す
-     * @param mainActivity : MainActivityのインスタンス
-     * @param buttonKind : メイン画面のボタンの種類を表す列挙型
-     * @param title : ダイアログのタイトル
+     * @param mainActivity MainActivityのインスタンス
+     * @param buttonKind メイン画面のボタンの種類を表す列挙型
+     * @param title ダイアログのタイトル
      * @return このクラスのインスタンス
      */
     static CheckDialogFragment newInstance(MainActivity mainActivity, ButtonKind buttonKind, int title) {

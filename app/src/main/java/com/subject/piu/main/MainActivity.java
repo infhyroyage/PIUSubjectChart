@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * メイン画面の各ボタンの下にあるTextViewのテキストを更新する
-     * @param buttonKind : 更新するテキストの上にあるボタンのタイプ
+     * @param buttonKind 更新するテキストの上にあるボタンのタイプ
      */
     void updateTextByCheck(ButtonKind buttonKind) {
         // ログ出力

@@ -4,20 +4,25 @@ class UnitChart {
     // 曲名
     private String name;
 
-    // COOPのフラグ
-    // trueの場合はisDoubleの値を見ない
-    private boolean isCoop;
+    // COOP譜面の文字列
+    private String coopStr;
 
-    //SingleとDoubleのフラグ
+    // Single、Doubleのフラグ
     private boolean isDouble;
 
     // 難易度
-    // isCoopがtrueの場合は見ない
     private int difficulty;
 
-    UnitChart(String name, boolean isCoop, boolean isDouble, int difficulty) {
+    /**
+     * 単一譜面クラスのコンストラクタ
+     * @param name 曲名
+     * @param coopStr COOP譜面の文字列(""でない場合はCOOP譜面を表す)
+     * @param isDouble Single、Doubleのフラグ(coopStrが""でない場合は任意の値でOK)
+     * @param difficulty 難易度(coopStrが""でない場合は任意の値でOK)
+     */
+    UnitChart(String name, String coopStr, boolean isDouble, int difficulty) {
         this.name = name;
-        this.isCoop = isCoop;
+        this.coopStr = coopStr;
         this.isDouble = isDouble;
         this.difficulty = difficulty;
     }
@@ -27,11 +32,11 @@ class UnitChart {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(name);
         strBuilder.append(" ");
-        if (isCoop) {
-            strBuilder.append("CO-OP");
-        } else {
+        if (coopStr.equals("")) {
             strBuilder.append((isDouble) ? "D" : "S");
             strBuilder.append(difficulty);
+        } else {
+            strBuilder.append(coopStr);
         }
 
         return strBuilder.toString();
