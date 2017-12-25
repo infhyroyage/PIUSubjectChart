@@ -116,7 +116,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
-                    //  「ステップ」のON/OFF状態をバックアップ
+                    // 「ステップ」のON/OFF状態をバックアップ
                     backup = CommonParams.step.clone();
 
                     builder.setView(switchesView)
@@ -174,7 +174,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
-                    //  「難易度」のON/OFF状態をバックアップ
+                    // 「難易度」のON/OFF状態をバックアップ
                     backup = CommonParams.difficulty.clone();
 
                     builder.setView(switchesView)
@@ -232,7 +232,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
-                    //  「タイプ」のON/OFF状態をバックアップ
+                    // 「タイプ」のON/OFF状態をバックアップ
                     backup = CommonParams.type.clone();
 
                     builder.setView(switchesView)
@@ -290,7 +290,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
-                    //  「シリーズ」のON/OFF状態をバックアップ
+                    // 「シリーズ」のON/OFF状態をバックアップ
                     backup = CommonParams.series.clone();
 
                     builder.setView(switchesView)
@@ -348,7 +348,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
-                    //  「カテゴリー」のON/OFF状態をバックアップ
+                    // 「カテゴリー」のON/OFF状態をバックアップ
                     backup = CommonParams.category.clone();
 
                     builder.setView(switchesView)
@@ -379,35 +379,55 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
                     tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
-                    // 「その他」の個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.other.length; i++) {
-                        // TableRowの格納
-                        TableRow row = new TableRow(mainActivity);
-                        row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
-                        tableLayout.addView(row, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                    // 「PP解禁譜面を含む」のTableRowの格納
+                    TableRow row = new TableRow(mainActivity);
+                    row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
+                    tableLayout.addView(row, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                        // TextViewの格納
-                        TextView textView = new TextView(mainActivity);
-                        textView.setText(CommonParams.OTHERS[i]);
-                        textView.setPadding((int) (20 * dp), 0, 0, 0);
-                        row.addView(textView, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                    // 「PP解禁譜面を含む」のTextViewの格納
+                    TextView textView = new TextView(mainActivity);
+                    textView.setText(CommonParams.PP_UNLOCKED_STEP);
+                    textView.setPadding((int) (20 * dp), 0, 0, 0);
+                    row.addView(textView, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                        // Switchの格納
-                        Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.other[i]);
-                        s.setPadding(0, 0, (int) (20 * dp), 0);
-                        final int idx = i;
-                        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.other[idx] = isChecked;
-                            }
-                        });
-                        row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                    }
+                    // 「PP解禁譜面を含む」のSwitchの格納
+                    Switch s = new Switch(mainActivity);
+                    s.setChecked(CommonParams.ppUnlockedStep);
+                    s.setPadding(0, 0, (int) (20 * dp), 0);
+                    s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            CommonParams.ppUnlockedStep = isChecked;
+                        }
+                    });
+                    row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                    //  「その他」のON/OFF状態をバックアップ
-                    backup = CommonParams.other.clone();
+                    // 「AM.PASS使用時限定譜面を含む」のTableRowの格納
+                    row = new TableRow(mainActivity);
+                    row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
+                    tableLayout.addView(row, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                    // 「AM.PASS使用時限定譜面を含む」のTextViewの格納
+                    textView = new TextView(mainActivity);
+                    textView.setText(CommonParams.AM_PASS_ONLY_USED_STEP);
+                    textView.setPadding((int) (20 * dp), 0, 0, 0);
+                    row.addView(textView, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                    // 「AM.PASS使用時限定譜面を含む」のSwitchの格納
+                    s = new Switch(mainActivity);
+                    s.setChecked(CommonParams.amPassOnlyUsedStep);
+                    s.setPadding(0, 0, (int) (20 * dp), 0);
+                    s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            CommonParams.amPassOnlyUsedStep = isChecked;
+                        }
+                    });
+                    row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                    // 「その他」のON/OFF状態をバックアップ
+                    final boolean backupPpUnlockedStep = CommonParams.ppUnlockedStep;
+                    final boolean backupAmPassOnlyUsedStep = CommonParams.amPassOnlyUsedStep;
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getInt("Title"))
@@ -415,7 +435,8 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.other = backup.clone();
+                            CommonParams.ppUnlockedStep = backupPpUnlockedStep;
+                            CommonParams.amPassOnlyUsedStep = backupAmPassOnlyUsedStep;
                         }
                     });
 

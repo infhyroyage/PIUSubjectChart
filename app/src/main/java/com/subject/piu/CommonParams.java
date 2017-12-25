@@ -75,16 +75,22 @@ public abstract class CommonParams {
     public static boolean[] category = new boolean[CATEGORIES.length];
 
     /**
-     * 「その他」の種類
+     * PP解禁譜面の種類
      */
-    public static final String[] OTHERS = {
-            "PP解禁譜面を含む",
-            "AM.PASS使用時限定譜面を含む"
-    };
+    public static final String PP_UNLOCKED_STEP = "PP解禁譜面を含む";
     /**
-     * 「その他」のチェック状態
+     * PP解禁譜面のチェック状態
      */
-    public static boolean[] other = new boolean[OTHERS.length];
+    public static boolean ppUnlockedStep = false;
+
+    /**
+     * AM.PASS使用時限定譜面の種類
+     */
+    public static final String AM_PASS_ONLY_USED_STEP = "AM.PASS使用時限定譜面を含む";
+    /**
+     * AM.PASS使用時限定譜面のチェック状態
+     */
+    public static boolean amPassOnlyUsedStep = false;
 
     /**
      * PUMP IT UP (JAPAN) Wikiから取得する、各シリーズのURLの文字列配列

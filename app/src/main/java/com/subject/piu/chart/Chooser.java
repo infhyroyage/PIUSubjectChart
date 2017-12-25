@@ -1,5 +1,7 @@
 package com.subject.piu.chart;
 
+import android.util.Log;
+
 import com.subject.piu.CommonParams;
 import com.subject.piu.GettingHTMLError;
 
@@ -17,12 +19,6 @@ public abstract class Chooser {
     // デバッグ用のタグ
     private static final String TAG = "Chooser";
 
-    // スクレイピングを行った譜面リスト
-    private static List<UnitChart> chartList = new CopyOnWriteArrayList<>();
-
-    // TODO : デバッグ用の文字列
-    private static String debugStr = "";
-
     /**
      * GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した原因
      * choiceメソッドでIOExceptionがスローされた場合に値が格納される
@@ -37,6 +33,9 @@ public abstract class Chooser {
      * @throws IOException GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した場合
      */
     public static String run() throws InterruptedException, ExecutionException, IOException {
+        // スクレイピングを行った譜面リストを生成
+        List<UnitChart> chartList = new CopyOnWriteArrayList<>();
+
         // 各シリーズのHTMLドキュメントを取得
         // NOTE : Androidで通信を行うメソッドは別スレッドで行う必要がある
         Document[] docs = new GettingHTMLsTask().execute().get();
@@ -47,7 +46,7 @@ public abstract class Chooser {
             chartList.addAll(scrapeH3FromDocument(doc));
         }
 
-        return debugStr;
+        return "hoge";
     }
 
     /**
@@ -60,20 +59,20 @@ public abstract class Chooser {
         List<UnitChart> chartSubList = new ArrayList<>();
 
         /*
-         * 各シリーズのHTMLドキュメントの中にあるh3タグから、種別が
-         * 「NORMAL」、「REMIX」、「FULL SONG」、「SHORT CUT」
-         * TODO : 、「PRIME2で復活・削除した曲」
-         * TODO : 、「PRIME2でプレイ可能になったPRIME JE未収録曲」
-         * を取得し、そうではない場合はスキップ
+         * 各シリーズのHTMLドキュメントの中にあるh3タグから種別を取得し、以下と異なる場合はスキップする
+         *  ・NORMAL
+         *  ・REMIX
+         *  ・FULL SONG
+         *  ・SHORT CUT
+         *  ・TODO : PRIME2で復活・削除した曲
+         *  ・TODO : PRIME2でプレイ可能になったPRIME JE未収録曲
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
-            if (!isCoincidedTypes(h3)) {
-            //if (!isSkipped(h3)) { // TODO
-                continue;
-            }
+            String type = h3.text().trim();
+            if (isSkippedByType(type)) continue;
 
-            // 抽出したカテゴリーのインスタンス
-            String categoryStr = "Unknown Category";
+            // ログ出力
+            Log.d(TAG, "scrapeH3FromDocument:type=" + type);
 
             // h3タグの親の親のタグを、現在の基準タグとして取得
             Element divCurrent = h3.parent().parent();
@@ -81,73 +80,136 @@ public abstract class Chooser {
             for (int idx = divCurrent.elementSiblingIndex() + 1; idx < divCurrent.parent().children().size(); idx++) {
                 Element divIdx = divCurrent.parent().children().get(idx);
 
-                /*
-                 * 同階層のタグの最初の子供の最初の子供のタグを取得し、
-                 * h4タグならカテゴリーが変化するのでそれを抽出、
-                 * h3タグなら次の種別となるのでbreakする
-                 */
+                // 同階層のタグの最初の子供の最初の子供のタグを取得する
                 Element divHeader = divIdx.child(0).child(0);
-                if (divHeader.tagName().equals("h4")) {
-                    categoryStr = divHeader.text().trim();
-                    debugStr += "[" + categoryStr + "]\n";
-                }
-                if (divHeader.tagName().equals("h3")) break;
+                /*
+                 * 上記タグがh3タグなら、別の種別をスクレイピングしてしまうのでbreakする
+                 * h4タグならカテゴリーが変化するのでそれを抽出する
+                 */
+                if (divHeader.tagName().equals("h3")) {
+                    break;
+                } else if (divHeader.tagName().equals("h4")) {
+                    /*
+                     * 抽出したカテゴリーから、以下と異なる場合はスキップする
+                     *  ・Original
+                     *  ・K-POP
+                     *  ・World Music
+                     *  ・XROSS
+                     *  ・J-Music
+                     */
+                    String category = divHeader.text().trim();
+                    if (isSkippedByCategory(category)) continue;
 
-                // 同階層のタグに含まれるtableタグをすべて取得し、譜面サブリストに追加
-                for (Element table : divIdx.select("table")) {
-                    chartSubList.addAll(scrapeTdFromTable(table));
+                    // ログ出力
+                    Log.d(TAG, "scrapeH3FromDocument:category=" + category);
+
+                    // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
+                    for (Element table : selectTablesFromNonSkippedCategory(divIdx, category)) {
+                        chartSubList.addAll(scrapeTdFromTable(table));
+                    }
                 }
             }
-            debugStr += "----------\n";
         }
 
         return chartSubList;
     }
 
     /**
-     * 指定されたh3/h4タグのテキストが、以下のいずれかの文字列と一致するかどうか判別する
-     * なお、英文字の大文字と小文字は区別しない
+     * 「種別」のチェック状態と、指定されたh3/h4タグのテキストにおける
+     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
      *  ・NORMAL
      *  ・REMIX
      *  ・FULL SONG
      *  ・SHORT CUT
      *  ・PRIME2で復活・削除した曲
      *  ・PRIME2でプレイ可能になったPRIME JE未収録曲
-     * @param element h3/h4タグのインスタンス
-     * @return 一致する場合はtrue、そうではない場合はfalse
+     * @param type h3/h4タグのインスタンスのテキスト
+     * @return スキップする場合はtrue、スキップしない場合はfalse
      */
-    private static boolean isSkipped(Element element) {
-        // 「NORMAL」、「REMIX」、「FULL SONG」、「SHORT CUT」の一致判定
-        boolean types = isCoincidedTypes(element);
-        // 「PRIME2で復活・削除した曲」の一致判定
-        boolean revival = element.text().trim().equals("PRIME2で復活・削除した曲");
-        // 「PRIME2でプレイ可能になったPRIME JE未収録曲」の一致判定
-        boolean capableFromJE = element.text().trim().equals("PRIME2でプレイ可能になったPRIME JE未収録曲");
+    private static boolean isSkippedByType(String type) {
+        // 「NORMAL」のスキップ判定
+        boolean normal = CommonParams.type[0] && type.equalsIgnoreCase(CommonParams.TYPES[0]);
+        // 「REMIX」のスキップ判定
+        boolean remix = CommonParams.type[1] && type.equalsIgnoreCase(CommonParams.TYPES[1]);
+        // 「FULL SONG」のスキップ判定
+        boolean fullSong = CommonParams.type[2] && type.equalsIgnoreCase(CommonParams.TYPES[2]);
+        // 「SHORT CUT」のスキップ判定
+        boolean shortCut = CommonParams.type[3] && type.equalsIgnoreCase(CommonParams.TYPES[3]);
 
-        return types || revival || capableFromJE;
+        return !(normal || remix || fullSong || shortCut);
     }
 
     /**
-     * 指定されたh3/h4タグのテキストが、以下のいずれかの文字列と一致するかどうか判別する
-     * なお、英文字の大文字と小文字は区別しない
-     *  ・NORMAL
-     *  ・REMIX
-     *  ・FULL SONG
-     *  ・SHORT CUT
-     * @param element h3/h4タグのインスタンス
-     * @return 一致する場合はtrue、そうではない場合はfalse
+     * 「カテゴリー」のチェック状態と、指定されたh4/h5タグのテキストにおける
+     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
+     *  ・Original
+     *  ・K-POP
+     *  ・World Music
+     *  ・XROSS
+     *  ・J-Music
+     * @param category h4/h5タグのインスタンスのテキスト
+     * @return スキップする場合はtrue、スキップしない場合はfalse
      */
-    private static boolean isCoincidedTypes(Element element) {
-        // 「NORMAL」の一致判定
-        boolean normal = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[0]);
-        // 「REMIX」の一致判定
-        boolean remix = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[1]);
-        // 「FULL SONG」の一致判定
-        boolean fullSong = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[2]);
-        // 「SHORT CUT」の一致判定
-        boolean shortCut = element.text().trim().equalsIgnoreCase(CommonParams.TYPES[3]);
+    private static boolean isSkippedByCategory(String category) {
+        // 「Original」のスキップ判定
+        boolean original = (CommonParams.category[0])
+                        && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
+        // 「K-POP」のスキップ判定
+        boolean kPop = (CommonParams.category[1])
+                    && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
+                    && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
+        // 「World Music」のスキップ判定
+        boolean worldMusic = (CommonParams.category[2])
+                        && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
+                        && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
+        // 「XROSS」のスキップ判定
+        boolean xross = (CommonParams.category[3])
+                     && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
+        // 「J-Music」のスキップ判定
+        boolean jMusic = (CommonParams.category[4])
+                && (category.charAt(0) == 'J' || category.charAt(0) == 'j')
+                && (category.substring(2, 7).equalsIgnoreCase(CommonParams.CATEGORIES[4].substring(2, 7)));
 
-        return normal || remix || fullSong || shortCut;
+        return !(original || kPop || worldMusic || xross || jMusic);
+    }
+
+    /**
+     * 現在の基準タグより先にある同階層のタグから、すべてのtableタグを取得する
+     * @param divIdx 現在の基準タグより先にある同階層のタグ
+     * @param category 抽出したカテゴリー
+     * @return 指定されたカテゴリーに含まれる、すべてのtableタグ
+     */
+    private static Elements selectTablesFromNonSkippedCategory(Element divIdx, String category) {
+        /*
+         * カテゴリーが「XROSS」の場合はさらに細かくh5タグがあるので、
+         * divIdxより1つ先にある同階層のタグを取得する
+         * それ以外のカテゴリーは、selectメソッドでtableタグを取得するだけでよい
+         */
+        if (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3])) {
+            // カテゴリーが「XROSS」であるtableタグをすべて含めたリスト
+            List<Element> xrossTableList = new ArrayList<>();
+
+            // 現在の基準タグより先にある、同階層のタグを取得
+            for (int xrossIdx = divIdx.elementSiblingIndex() + 1; xrossIdx < divIdx.parent().children().size(); xrossIdx++) {
+                Element divXrossIdx = divIdx.parent().children().get(xrossIdx);
+
+                // 同階層のタグの最初の子供の最初の子供のタグを取得する
+                Element divHeader2 = divXrossIdx.child(0).child(0);
+                /*
+                 * 上記タグがh5タグならtableタグを抽出し、
+                 * それ以外なら別の曲情報をスクレイピングしてしまうのでbreakする
+                 */
+                if (divHeader2.tagName().equals("h5")) {
+                    xrossTableList.addAll(divXrossIdx.select("table"));
+                } else {
+                    break;
+                }
+            }
+
+            return new Elements(xrossTableList);
+        } else {
+            return divIdx.select("table");
+        }
     }
 
     /**
@@ -182,60 +244,88 @@ public abstract class Chooser {
 
             // 「曲名」を取得
             String name = tr.child(0).text().trim();
-            debugStr += name + " ";
 
             // 「SINGLE」を取得し、空文字でなければ譜面サブリストに追加
             Element tdSingle = tds.get(2);
             if (!tdSingle.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSingle, name));
+                chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
             }
 
             // 「DOUBLE」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDouble = tds.get(3);
             if (!tdDouble.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdDouble, name));
+                chartSubList.addAll(scrapeChartFromTd(tdDouble, name, true, false));
             }
 
             // 「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
             Element tdSPerf = tds.get(4);
             if (!tdSPerf.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name));
+                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
             }
 
             // 「D-PERF」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDPerf = tds.get(5);
             if (!tdDPerf.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdDPerf, name));
+                chartSubList.addAll(scrapeChartFromTd(tdDPerf, name, true, true));
             }
 
-            debugStr += "\n";
+            // ログ出力
+            Log.d(TAG, "scrapeChartFromTd:name=" + name + ",tds=" + tds.text());
         }
 
         return chartSubList;
     }
 
     /**
-     * 指定されたtdタグから、tdタグに含まれるをスクレイピングする
+     * 指定されたtdタグから、tdタグに含まれる譜面情報をスクレイピングする
      * @param td tdタグのインスタンス
-     * @param name tdタグのインスタンス
+     * @param name 曲名
+     * @param isDouble Single、Doubleのフラグ
+     * @param isPerformance Performance譜面のフラグ
      * @return tdタグに含まれる譜面サブリスト
      */
-    private static List<UnitChart> scrapeChartFromTd(Element td, String name) {
+    private static List<UnitChart> scrapeChartFromTd(Element td, String name, boolean isDouble, boolean isPerformance) {
         // 指定されたtdタグに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
         // tdタグ中の「その他」に該当しない譜面を表した文字列を取得
         String chartsStr = td.ownText();
-        // TODO : "4 / 7 / 9 / 16 / 18/"、"7 / 14 //"、"10 / 16"などから数字のみ取得
-        debugStr += "(" + chartsStr + ")";
+        StringBuilder workStr = new StringBuilder();
+        for (int i = 0; i < chartsStr.length(); i++) {
+            if (chartsStr.charAt(i) == '/') {
+                try {
+                    // 難易度を取得して譜面サブリストに入れる
+                    int difficulty = Integer.parseInt(workStr.toString().trim());
+                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                } catch (Exception e) {
+                    // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                } finally {
+                    workStr = new StringBuilder();
+                }
+            } else {
+                workStr.append(chartsStr.charAt(i));
+            }
+        }
 
         // tdタグ中の「その他」に該当する譜面をすべて取得
         for (Element span : td.getElementsByTag("span")) {
-            // TODO : "[20_color:#ffaa00;]" : 20レベルのPP解禁譜面
-            // TODO : "[20_color:#0075c8;]" : 20レベルのAM.PASS専用譜面
-            // TODO : "[20_color:#009e25;]" : 20レベルのAM.PASS専用譜面
-            // TODO 上記以外は譜面サブリストに追加しない
-            debugStr += "[" + span.text() + "_" + span.attributes().get("style") + "]";
+            /*
+             * 以下の譜面を判別し、「その他」のチェック状態によって譜面サブリストに入れる
+             * ・PP解禁譜面 : #ffaa00を含む
+             * ・AM.PASS使用時限定譜面 : #0075c8または#009e25を含む
+             * 上記譜面以外は、譜面サブリストに入れない
+             */
+            boolean other = span.attributes().get("style").contains("#ffaa00") && CommonParams.ppUnlockedStep;
+            other = other || span.attributes().get("style").contains("#0075c8") && CommonParams.amPassOnlyUsedStep;
+            other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStep;
+            if (other) {
+                // COOP譜面の判別
+                if (span.text().contains("COOP") || span.text().contains("CO-OP")) {
+                    chartSubList.add(new UnitChart(name));
+                } else {
+                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, Integer.parseInt(span.text())));
+                }
+            }
         }
 
         return chartSubList;
