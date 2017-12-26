@@ -13,7 +13,7 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-class GettingHTMLsTask extends AsyncTask<Void, Void, Document[]> {
+class GettingHTMLsTask extends AsyncTask<String, Void, Document> {
     // デバッグ用のタグ
     private static final String TAG = "GettingHTMLsTask";
 
@@ -21,36 +21,38 @@ class GettingHTMLsTask extends AsyncTask<Void, Void, Document[]> {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     /**
-     * CommonParams.WIKI_URLSに定義してある、PUMP IT UP (JAPAN) Wikiの各バージョンのURLから、
-     * 各HTMLのドキュメントを取得するバックグラウンド動作を行う
-     * @return HTMLのドキュメント配列、エラーが発生した場合はnull
+     * CommonParams.WIKI_URLSに定義してある、PUMP IT UP (JAPAN) WikiのあるバージョンのURLから、
+     * HTMLのドキュメントを取得するバックグラウンド動作を行う
+     * @param args PUMP IT UP (JAPAN) WikiのあるバージョンのURL(1つのみ)
+     * @return あるバージョンのHTMLのドキュメント、エラーが発生した場合はnull
      */
     @Override
-    protected Document[] doInBackground(Void... args) {
-        Document[] docs = new Document[CommonParams.WIKI_URLS.length];
+    protected Document doInBackground(String... args) {
+        Document doc = null;
 
-        for (int i = 0; i < CommonParams.WIKI_URLS.length; i++) {
-            try {
-                // 各バージョンのURLからHTMLのドキュメントを取得
-                docs[i] = Jsoup.connect(CommonParams.WIKI_URLS[i]).userAgent(USER_AGENT).get();
-            } catch (UnknownHostException e) {
-                // オフラインのため通信できない
-                Chooser.cause = GettingHTMLError.CONNECTION;
-                return null;
-            } catch (HttpStatusException e) {
-                // URLが誤っているため通信できない
-                Chooser.cause = GettingHTMLError.URL;
-                return null;
-            } catch (IOException e) {
-                // ログ出力
-                Log.e(TAG, "doInBackGround->" + e.getClass().toString() + ":i=" + i);
+        try {
+            // あるバージョンのURLからHTMLのドキュメントを取得
+            doc = Jsoup.connect(args[0]).userAgent(USER_AGENT).get();
+        } catch (UnknownHostException e) {
+            // ログ出力
+            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
 
-                // システムエラー
-                Chooser.cause = GettingHTMLError.OTHER;
-                return null;
-            }
+            // オフラインのため通信できない
+            Chooser.cause = GettingHTMLError.CONNECTION;
+        } catch (HttpStatusException e) {
+            // ログ出力
+            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+
+            // URLが誤っているため通信できない
+            Chooser.cause = GettingHTMLError.URL;
+        } catch (Exception e) {
+            // ログ出力
+            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+
+            // システムエラー
+            Chooser.cause = GettingHTMLError.OTHER;
         }
 
-        return docs;
+        return doc;
     }
 }

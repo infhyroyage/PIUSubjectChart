@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -36,13 +37,16 @@ public abstract class Chooser {
         // スクレイピングを行った譜面リストを生成
         List<UnitChart> chartList = new CopyOnWriteArrayList<>();
 
-        // 各シリーズのHTMLドキュメントを取得
+        // TODO : 各シリーズのURLから、HTMLドキュメントを取得
         // NOTE : Androidで通信を行うメソッドは別スレッドで行う必要がある
-        Document[] docs = new GettingHTMLsTask().execute().get();
-        if (docs == null) throw new IOException();
+        for (Map.Entry<String, String> entry : CommonParams.WIKI_URL_SERIES_MAP.entrySet()) {
+            // ログ出力
+            Log.d(TAG, "run:series=" + entry.getValue());
 
-        // TODO : 各シリーズのHTMLドキュメントからh3タグをスクレイピングして取得した譜面サブリストを譜面リストに格納
-        for (Document doc : docs) {
+            Document doc = new GettingHTMLsTask().execute(entry.getKey()).get();
+            if (doc == null) throw new IOException();
+
+            // HTMLドキュメントからh3タグをスクレイピングして取得した譜面サブリストを譜面リストに格納
             chartList.addAll(scrapeH3FromDocument(doc));
         }
 
@@ -59,20 +63,29 @@ public abstract class Chooser {
         List<UnitChart> chartSubList = new ArrayList<>();
 
         /*
-         * 各シリーズのHTMLドキュメントの中にあるh3タグから種別を取得し、以下と異なる場合はスキップする
+         * 各シリーズのHTMLドキュメントの中にあるh3タグから種別を取得し、以下のいずれも異なる場合はスキップする
          *  ・NORMAL
          *  ・REMIX
          *  ・FULL SONG
          *  ・SHORT CUT
-         *  ・TODO : PRIME2で復活・削除した曲
-         *  ・TODO : PRIME2でプレイ可能になったPRIME JE未収録曲
+         *  ・PRIME2で復活・削除した曲
+         *  また、シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」の場合は、h4タグをスクレイピングする
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
             String type = h3.text().trim();
-            if (isSkippedByType(type)) continue;
+            if (type.equals("PRIME2でプレイ可能になったPRIME JE未収録曲")) {
+                // ログ出力
+                Log.d(TAG, "scrapeH3FromDocument:type=" + type);
+
+                chartSubList.addAll(scrapeH4FromH3(h3));
+                continue;
+            } else if (isSkippedByType(type) && !type.equals("PRIME2で復活・削除した曲")) {
+                continue;
+            }
 
             // ログ出力
             Log.d(TAG, "scrapeH3FromDocument:type=" + type);
+
 
             // h3タグの親の親のタグを、現在の基準タグとして取得
             Element divCurrent = h3.parent().parent();
@@ -85,10 +98,19 @@ public abstract class Chooser {
                 /*
                  * 上記タグがh3タグなら、別の種別をスクレイピングしてしまうのでbreakする
                  * h4タグならカテゴリーが変化するのでそれを抽出する
+                 * h4タグのカテゴリーが「復活曲」の場合は、「Original」の曲しか存在しないので
+                 * カテゴリーを「Original」に変化し、「削除曲」の場合はスキップする
                  */
                 if (divHeader.tagName().equals("h3")) {
                     break;
                 } else if (divHeader.tagName().equals("h4")) {
+                    String category = divHeader.text().trim();
+                    if (category.contains("復活")) {
+                        category = "Original";
+                    } else if (category.contains("削除")) {
+                        continue;
+                    }
+
                     /*
                      * 抽出したカテゴリーから、以下と異なる場合はスキップする
                      *  ・Original
@@ -97,7 +119,6 @@ public abstract class Chooser {
                      *  ・XROSS
                      *  ・J-Music
                      */
-                    String category = divHeader.text().trim();
                     if (isSkippedByCategory(category)) continue;
 
                     // ログ出力
@@ -107,6 +128,64 @@ public abstract class Chooser {
                     for (Element table : selectTablesFromNonSkippedCategory(divIdx, category)) {
                         chartSubList.addAll(scrapeTdFromTable(table));
                     }
+                }
+            }
+        }
+
+        return chartSubList;
+    }
+
+    /**
+     * シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」のh3タグから、h4タグをスクレイピングする
+     * @param h3 シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」のh3タグ
+     * @return シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」の譜面サブリスト
+     */
+    private static List<UnitChart> scrapeH4FromH3(Element h3) {
+        // 指定されたあるシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
+        List<UnitChart> chartSubList = new ArrayList<>();
+
+        // h3タグの親の親のタグを、現在の基準タグとして取得
+        Element divCurrent = h3.parent().parent();
+        // 現在のタイプの文字列
+        String type = "";
+        // 現在の基準タグより先にある、同階層のタグを取得
+        for (int idx = divCurrent.elementSiblingIndex() + 1; idx < divCurrent.parent().children().size(); idx++) {
+            Element divIdx = divCurrent.parent().children().get(idx);
+
+            // 同階層のタグの最初の子供の最初の子供のタグを取得する
+            Element divHeader = divIdx.child(0).child(0);
+            if (divHeader.tagName().equals("h4")) {
+                // 上記タグがh4タグならシリーズが変化するので抽出する
+                type = divHeader.text().trim();
+
+                // ログ出力
+                if (!isSkippedByType(type)) {
+                    Log.d(TAG, "scrapeH4FromH3:type=" + type);
+                }
+            } else if (divHeader.tagName().equals("h5")) {
+                String category = divHeader.text().trim();
+
+                /*
+                 * 以前抽出したタイプから、以下と異なる場合はスキップする
+                 *  ・NORMAL
+                 *  ・REMIX
+                 *  ・FULL SONG
+                 *  ・SHORT CUT
+                 * また、抽出したカテゴリーから、以下と異なる場合はスキップする
+                 *  ・Original
+                 *  ・K-POP
+                 *  ・World Music
+                 *  ・XROSS
+                 *  ・J-Music
+                 */
+                if (isSkippedByType(type) || isSkippedByCategory(category)) continue;
+
+                // ログ出力
+                Log.d(TAG, "scrapeH4FromH3:category=" + category);
+
+                // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
+                for (Element table : divIdx.select("table")) {
+                    chartSubList.addAll(scrapeTdFromTable(table));
                 }
             }
         }
@@ -153,18 +232,18 @@ public abstract class Chooser {
     private static boolean isSkippedByCategory(String category) {
         // 「Original」のスキップ判定
         boolean original = (CommonParams.category[0])
-                        && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
+                && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
         // 「K-POP」のスキップ判定
         boolean kPop = (CommonParams.category[1])
-                    && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
-                    && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
+                && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
+                && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
         // 「World Music」のスキップ判定
         boolean worldMusic = (CommonParams.category[2])
-                        && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
-                        && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
+                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
+                && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
         // 「XROSS」のスキップ判定
         boolean xross = (CommonParams.category[3])
-                     && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
+                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
         // 「J-Music」のスキップ判定
         boolean jMusic = (CommonParams.category[4])
                 && (category.charAt(0) == 'J' || category.charAt(0) == 'j')

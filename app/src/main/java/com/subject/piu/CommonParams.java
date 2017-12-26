@@ -1,5 +1,8 @@
 package com.subject.piu;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class CommonParams {
     /**
      * 「ステップ」の種類
@@ -93,16 +96,19 @@ public abstract class CommonParams {
     public static boolean amPassOnlyUsedStep = false;
 
     /**
-     * PUMP IT UP (JAPAN) Wikiから取得する、各シリーズのURLの文字列配列
-     */
-    public static final String[] WIKI_URLS = {
-            "http://seesaawiki.jp/piujpn/d/PRIME2"  // PRIME2
-    };
-
-    /**
      * MainActivityからDialogFragmentを表示するのに用いるタグ
      */
     public static final String MAIN_ACTIVITY_DIALOG_FRAGMENT = "MainActivityDialogFragment";
+
+    /**
+     * PUMP IT UP (JAPAN) Wikiの各シリーズのURLの文字列をキーとする「シリーズ」の種類のマップ
+     */
+    public static final Map<String, String> WIKI_URL_SERIES_MAP;
+    static {
+        WIKI_URL_SERIES_MAP = new HashMap<>();
+        WIKI_URL_SERIES_MAP.put("http://seesaawiki.jp/piujpn/d/FIESTA", SERIES[4]);
+        //WIKI_URL_SERIES_MAP.put("http://seesaawiki.jp/piujpn/d/PRIME2", SERIES[7]);
+    }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする
     private CommonParams() {}
