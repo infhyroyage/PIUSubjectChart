@@ -324,10 +324,17 @@ public abstract class Chooser {
             // 「曲名」を取得
             String name = tr.child(0).text().trim();
 
-            // 「SINGLE」を取得し、空文字でなければ譜面サブリストに追加
-            Element tdSingle = tds.get(2);
-            if (!tdSingle.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
+            // 「ステップ」のチェック状態に応じて、「SINGLE」と「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
+            if (CommonParams.step[0]) {
+                Element tdSingle = tds.get(2);
+                if (!tdSingle.html().equals("")) {
+                    chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
+                }
+
+                Element tdSPerf = tds.get(4);
+                if (!tdSPerf.html().equals("")) {
+                    chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
+                }
             }
 
             // 「DOUBLE」を取得し、空文字でなければ譜面サブリストに追加
@@ -336,20 +343,11 @@ public abstract class Chooser {
                 chartSubList.addAll(scrapeChartFromTd(tdDouble, name, true, false));
             }
 
-            // 「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
-            Element tdSPerf = tds.get(4);
-            if (!tdSPerf.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
-            }
-
             // 「D-PERF」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDPerf = tds.get(5);
             if (!tdDPerf.html().equals("")) {
                 chartSubList.addAll(scrapeChartFromTd(tdDPerf, name, true, true));
             }
-
-            // ログ出力
-            Log.d(TAG, "scrapeChartFromTd:name=" + name + ",tds=" + tds.text());
         }
 
         return chartSubList;
@@ -372,17 +370,50 @@ public abstract class Chooser {
         StringBuilder workStr = new StringBuilder();
         for (int i = 0; i < chartsStr.length(); i++) {
             if (chartsStr.charAt(i) == '/') {
-                try {
-                    // 難易度を取得して譜面サブリストに入れる
-                    int difficulty = Integer.parseInt(workStr.toString().trim());
-                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
-                } catch (Exception e) {
-                    // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
-                } finally {
-                    workStr = new StringBuilder();
+                if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
+                    // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
+                    if (CommonParams.step[2]) {
+                        chartSubList.add(new UnitChart(name));
+                    }
+                } else {
+                    // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
+                    if (isDouble && !CommonParams.step[1]) {
+                        continue;
+                    }
+
+                    try {
+                        int difficulty = Integer.parseInt(workStr.toString().trim());
+
+                        if (CommonParams.difficulty[difficulty - 1]) {
+                            chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                        }
+                    } catch (Exception e) {
+                        // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                    } finally {
+                        workStr = new StringBuilder();
+                    }
                 }
             } else {
                 workStr.append(chartsStr.charAt(i));
+            }
+        }
+        if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
+            // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
+            if (CommonParams.step[2]) {
+                chartSubList.add(new UnitChart(name));
+            }
+        } else {
+            // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
+            if (!isDouble || CommonParams.step[1]) {
+                try {
+                    int difficulty = Integer.parseInt(workStr.toString().trim());
+
+                    if (CommonParams.difficulty[difficulty - 1]) {
+                        chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                    }
+                } catch (Exception e) {
+                    // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                }
             }
         }
 
@@ -398,11 +429,25 @@ public abstract class Chooser {
             other = other || span.attributes().get("style").contains("#0075c8") && CommonParams.amPassOnlyUsedStep;
             other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStep;
             if (other) {
-                // COOP譜面の判別
-                if (span.text().contains("COOP") || span.text().contains("CO-OP")) {
-                    chartSubList.add(new UnitChart(name));
+                if (span.text().trim().contains("COOP") || span.text().trim().contains("CO-OP")) {
+                    // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
+                    if (CommonParams.step[2]) {
+                        chartSubList.add(new UnitChart(name));
+                    }
                 } else {
-                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, Integer.parseInt(span.text())));
+                    // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
+                    if (isDouble && !CommonParams.step[1]) {
+                        continue;
+                    }
+
+                    try {
+                        int difficulty = Integer.parseInt(span.text().trim());
+                        if (CommonParams.difficulty[difficulty - 1]) {
+                            chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                        }
+                    } catch (Exception e) {
+                        // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                    }
                 }
             }
         }

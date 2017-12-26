@@ -1,6 +1,11 @@
 package com.subject.piu.chart;
 
+import android.util.Log;
+
 class UnitChart {
+    // デバッグ用のタグ
+    private static final String TAG = "UnitChart";
+
     // 曲名
     private String name;
 
@@ -29,6 +34,9 @@ class UnitChart {
         this.isPerformance = isPerformance;
         this.difficulty = difficulty;
         this.coopStr = "";
+
+        // ログ出力
+        Log.d(TAG, "name=" + name + ",isDouble=" + isDouble + ",isPerformance=" + isPerformance + ",difficulty=" + difficulty);
     }
 
     /**
@@ -37,7 +45,10 @@ class UnitChart {
      */
     UnitChart(String name) {
         this.name = name;
-        this.coopStr = "COOP";
+        this.coopStr = "CO-OP";
+
+        // ログ出力
+        Log.d(TAG, "name=" + name + ",CO-OP");
     }
 
     @Override
