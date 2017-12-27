@@ -2,7 +2,6 @@ package com.subject.piu.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,9 +11,6 @@ import com.subject.R;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    // デバッグ用のタグ
-    private static final String TAG = "MainActivity";
-
     // MainActivityのインスタンス
     private MainActivity mainActivity;
 
@@ -106,9 +102,6 @@ public class MainActivity extends AppCompatActivity {
      * @param buttonKind 更新するテキストの上にあるボタンのタイプ
      */
     void updateTextByCheck(ButtonKind buttonKind) {
-        // ログ出力
-        Log.d(TAG, "updateTextByCheck:buttonKind=" + buttonKind);
-
         // 更新後のテキスト文字列
         StringBuilder textBuilder = new StringBuilder();
 

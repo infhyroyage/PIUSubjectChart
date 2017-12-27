@@ -3,14 +3,12 @@ package com.subject.piu.chart;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.subject.piu.CommonParams;
 import com.subject.piu.GettingHTMLError;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 
 class GettingHTMLsTask extends AsyncTask<String, Void, Document> {
