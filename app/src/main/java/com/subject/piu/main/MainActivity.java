@@ -92,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonRun).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO : 「お題を出す」のボタンを押せなくする
+
+                // TODO : 「お題を出す」→「処理中...」に変化する
+
                 CheckDialogFragment.newInstance(mainActivity, ButtonKind.RUN, R.string.run).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
             }
         });

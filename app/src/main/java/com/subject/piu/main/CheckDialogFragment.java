@@ -468,7 +468,12 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // システムエラーメッセージをセット
                         builder.setMessage(getString(R.string.error_system));
                     }
-                    builder.setPositiveButton(R.string.ok, null);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // TODO : 「お題を出す」のボタンを再び押せるようにする
+                        }
+                    });
 
                     return builder.create();
                 default:

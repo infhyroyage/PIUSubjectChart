@@ -20,7 +20,7 @@ public abstract class Chooser {
     private static final String TAG = "Chooser";
 
     /**
-     * GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した原因
+     * GettingHTMLTask.doInBackgroundメソッドでエラーが発生した原因
      * choiceメソッドでIOExceptionがスローされた場合に値が格納される
      */
     public static GettingHTMLError cause;
@@ -28,9 +28,9 @@ public abstract class Chooser {
     /**
      * 今日のお題を出す
      * @return 今日のお題の譜面を表した文字列
-     * @throws InterruptedException GettingHTMLsTask.executeメソッドでエラーが発生した場合
-     * @throws ExecutionException GettingHTMLsTask.executeメソッドでエラーが発生した場合
-     * @throws IOException GettingHTMLsTask.doInBackgroundメソッドでエラーが発生した場合
+     * @throws InterruptedException スレッドの割込みが発生した場合
+     * @throws ExecutionException GettingHTMLTask.doInBackgroundメソッドで例外がスローされた場合
+     * @throws IOException GettingHTMLTask.doInBackgroundメソッドでエラーが発生した場合
      */
     public static String run() throws InterruptedException, ExecutionException, IOException {
         // スクレイピングを行った譜面リストを生成
@@ -49,7 +49,7 @@ public abstract class Chooser {
             Log.d(TAG, "run:start->execute,url=" + url);
 
             // あるシリーズのURLから、そのシリーズのHTMLドキュメントを取得
-            Document doc = new GettingHTMLsTask().execute(url).get();
+            Document doc = new GettingHTMLTask().execute(url).get();
             if (doc == null) throw new IOException();
 
             // ログ出力
@@ -60,6 +60,8 @@ public abstract class Chooser {
 
             // ログ出力
             Log.d(TAG, "run:scrape->end,url=" + url);
+
+            // TODO : プログレスバーの進捗を上げる
         }
 
         // スクレイピングを行った譜面リストから、ランダムに1つの譜面を選ぶ
