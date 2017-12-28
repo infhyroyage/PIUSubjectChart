@@ -9,7 +9,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,13 +27,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/step"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/textViewStep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current" />
+                android:text="@string/current"/>
 
             <Button
                 android:id="@+id/buttonDifficulty"
@@ -41,13 +41,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/difficulty"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/textViewDifficulty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current" />
+                android:text="@string/current"/>
 
             <Button
                 android:id="@+id/buttonType"
@@ -55,13 +55,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/type"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/textViewType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current" />
+                android:text="@string/current"/>
 
             <Button
                 android:id="@+id/buttonSeries"
@@ -69,13 +69,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/series"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/textViewSeries"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current" />
+                android:text="@string/current"/>
 
             <Button
                 android:id="@+id/buttonCategory"
@@ -83,13 +83,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/category"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/textViewCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current" />
+                android:text="@string/current"/>
 
             <Button
                 android:id="@+id/buttonOther"
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/other"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -105,7 +105,7 @@
         android:id="@+id/buttonRun"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:text="@string/run"
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

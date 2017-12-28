@@ -8,7 +8,7 @@
     <string name="error_connection">通信エラーが発生しました。\n接続状況を確かめてください。</string>
     <string name="error_system">システムエラーが発生しました。\nアプリケーション開発者に連絡してください。</string>
     <string name="error_url">存在しないURLをアクセスしました。\nURL設定を確かめてください。</string>
-    <string name="getting_charts">データ取得中…</string>
+    <string name="getting_charts">お待ちください…</string>
     <string name="other">その他</string>
     <string name="ok">OK</string>
     <string name="run">今日のお題を出す</string>

@@ -6,8 +6,8 @@ android {
         applicationId "com.subject.piu"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20171228
-        versionName "20171228"
+        versionCode 20171229
+        versionName "20171229"
     }
     buildTypes {
         release {
@@ -26,6 +26,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.2'
     compile 'org.jsoup:jsoup:1.7.3'
 }
+
 repositories {
     mavenCentral()
 }

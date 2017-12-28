@@ -8,11 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TableLayout;
@@ -22,9 +20,7 @@ import android.widget.Toast;
 
 import com.subject.piu.CommonParams;
 import com.subject.R;
-import com.subject.piu.chart.Chooser;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 public class CheckDialogFragment extends AppCompatDialogFragment {
@@ -32,7 +28,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = "CheckDialogFragment";
 
     // 呼びだされたMainActivityのインスタンス
-    private static MainActivity mainActivity;
+    private MainActivity mainActivity;
 
     // 1dpの大きさ(単位:px)
     private static float dp;
@@ -41,17 +37,19 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
      * このクラスのインスタンスの初期化を行い、それを返す
      * @param mainActivity MainActivityのインスタンス
      * @param buttonKind メイン画面のボタンの種類を表す列挙型
-     * @param title ダイアログのタイトル
+     * @param args ダイアログのタイトル/メッセージなど
      * @return このクラスのインスタンス
      */
-    static CheckDialogFragment newInstance(MainActivity mainActivity, ButtonKind buttonKind, int title) {
+    static CheckDialogFragment newInstance(MainActivity mainActivity, ButtonKind buttonKind, String... args) {
         CheckDialogFragment thisFragment = new CheckDialogFragment();
-        CheckDialogFragment.mainActivity = mainActivity;
+        thisFragment.mainActivity = mainActivity;
 
         // ダイアログのタイトル、メイン画面のボタンの種類をセット
         Bundle bundle = new Bundle();
         bundle.putSerializable("ButtonKind", buttonKind);
-        bundle.putInt("Title", title);
+        for (int i = 0; i < args.length; i++) {
+            bundle.putString("args[" + i + "]", args[i]);
+        }
         thisFragment.setArguments(bundle);
 
         // 1dpの大きさをpx単位で計算
@@ -122,7 +120,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     backup = CommonParams.step.clone();
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -180,7 +178,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     backup = CommonParams.difficulty.clone();
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -238,7 +236,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     backup = CommonParams.type.clone();
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -296,7 +294,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     backup = CommonParams.series.clone();
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -354,7 +352,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     backup = CommonParams.category.clone();
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -432,7 +430,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     final boolean backupAmPassOnlyUsedStep = CommonParams.amPassOnlyUsedStep;
 
                     builder.setView(switchesView)
-                            .setTitle(getArguments().getInt("Title"))
+                            .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, null).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -444,55 +442,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                     return builder.create();
                 case RUN:
-                    try {
-                        // お題を取得し、メッセージをセット
-                        builder.setMessage(getString(R.string.run_result, Chooser.run()));
-                    } catch (IOException e) {
-                        switch (Chooser.cause) {
-                        case CONNECTION:
-                            // 通信エラーメッセージをセット
-                            builder.setMessage(getString(R.string.error_connection));
-                            break;
-                        case URL:
-                            // URLエラーメッセージをセット
-                            builder.setMessage(getString(R.string.error_url));
-                            break;
-                        case OTHER:
-                        default:
-                            // システムエラーメッセージをセット
-                            builder.setMessage(getString(R.string.error_system));
-                            break;
-                        }
-                    } catch (Exception e) {
-                        // ログ出力
-                        Log.e(TAG, "onCreateDialog->" + e.getClass().toString());
-
-                        // システムエラーメッセージをセット
-                        builder.setMessage(getString(R.string.error_system));
-                    }
-
-                    builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // 「処理中…」のボタンを「お題を出す」にし、グレーアウトを解除する
-                            Button buttonRun = mainActivity.findViewById(R.id.buttonRun);
-                            buttonRun.setEnabled(true);
-                            buttonRun.setText(R.string.run);
-                        }
-                    }).setOnKeyListener(new DialogInterface.OnKeyListener() {
-                        @Override
-                        public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
-                            if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                                // 「処理中…」のボタンを「お題を出す」にし、グレーアウトを解除する
-                                Button buttonRun = mainActivity.findViewById(R.id.buttonRun);
-                                buttonRun.setEnabled(true);
-                                buttonRun.setText(R.string.run);
-                            }
-                            return false;
-                        }
-                    });
-
-                    return builder.create();
+                    return builder.setMessage(getArguments().getString("args[0]")).setPositiveButton(R.string.ok, null).create();
                 default:
                     throw new IllegalArgumentException("The ButtonKind argument cannot be applied.");
             }
