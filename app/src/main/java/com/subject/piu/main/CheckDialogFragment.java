@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TableLayout;
@@ -468,10 +470,25 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // システムエラーメッセージをセット
                         builder.setMessage(getString(R.string.error_system));
                     }
-                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+                    builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            // TODO : 「お題を出す」のボタンを再び押せるようにする
+                            // 「処理中…」のボタンを「お題を出す」にし、グレーアウトを解除する
+                            Button buttonRun = mainActivity.findViewById(R.id.buttonRun);
+                            buttonRun.setEnabled(true);
+                            buttonRun.setText(R.string.run);
+                        }
+                    }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                                // 「処理中…」のボタンを「お題を出す」にし、グレーアウトを解除する
+                                Button buttonRun = mainActivity.findViewById(R.id.buttonRun);
+                                buttonRun.setEnabled(true);
+                                buttonRun.setText(R.string.run);
+                            }
+                            return false;
                         }
                     });
 

@@ -3,6 +3,7 @@ package com.subject.piu.main;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.subject.piu.CommonParams;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         // 「シリーズ」の下にあるテキストを更新
         updateTextByCheck(ButtonKind.SERIES);
 
+
         // 「カテゴリー」のボタンにリスナーをセット
         findViewById(R.id.buttonCategory).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,13 +91,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 「お題を出す」のボタンにリスナーをセット
-        findViewById(R.id.buttonRun).setOnClickListener(new View.OnClickListener() {
+        final Button buttonRun = findViewById(R.id.buttonRun);
+        buttonRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO : 「お題を出す」のボタンを押せなくする
+                // 「お題を出す」のボタンを「処理中…」にし、グレーアウトして押せなくする
+                buttonRun.setEnabled(false);
+                buttonRun.setText(R.string.getting_charts);
 
-                // TODO : 「お題を出す」→「処理中...」に変化する
-
+                // お題を表示させるダイアログを表示
                 CheckDialogFragment.newInstance(mainActivity, ButtonKind.RUN, R.string.run).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
             }
         });
