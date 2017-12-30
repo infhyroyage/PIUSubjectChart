@@ -15,15 +15,12 @@ abstract class Scraper {
     // デバッグ用のタグ
     private static final String TAG = "Scraper";
 
-    // 抽象staticクラスなのでコンストラクタはprivateにする
-    private Scraper() {}
-
     /**
      * 指定されたあるシリーズのHTMLドキュメントから、h3タグをスクレイピングする
      * @param doc あるシリーズのHTMLドキュメント
      * @return あるシリーズの譜面サブリスト
      */
-    static List<UnitChart> scrapeH3FromDocument(Document doc) {
+    static List<UnitChart> execute(Document doc) {
         // 指定されたあるシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
@@ -419,4 +416,7 @@ abstract class Scraper {
 
         return chartSubList;
     }
+
+    // 抽象staticクラスなのでコンストラクタはprivateにする
+    private Scraper() {}
 }

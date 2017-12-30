@@ -31,9 +31,6 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
     // 呼びだされたMainActivityのインスタンス
     private MainActivity mainActivity;
 
-    // 1dpの大きさ(単位:px)
-    private static float dp;
-
     /**
      * このクラスのインスタンスの初期化を行い、それを返す
      * @param mainActivity MainActivityのインスタンス
@@ -52,9 +49,6 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
             bundle.putString("args[" + i + "]", args[i]);
         }
         thisFragment.setArguments(bundle);
-
-        // 1dpの大きさをpx単位で計算
-        dp = mainActivity.getResources().getDisplayMetrics().density;
 
         return thisFragment;
     }
@@ -83,6 +77,9 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
             // チェック状態のバックアップ
             final boolean[] backup;
+
+            // 1dpの大きさをpx単位で計算
+            float dp = mainActivity.getResources().getDisplayMetrics().density;
 
             switch (buttonKind) {
                 case STEP:
@@ -486,15 +483,9 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     });
 
                     return builder.create();
-                case RUN:
+                case POP:
                     return builder.setMessage(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, null)
-                            .setNeutralButton(R.string.share, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    // TODO : 共有
-                                }
-                            })
                             .create();
                 default:
                     throw new IllegalArgumentException("The ButtonKind argument cannot be applied.");

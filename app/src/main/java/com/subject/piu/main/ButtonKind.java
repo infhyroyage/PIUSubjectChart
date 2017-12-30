@@ -35,7 +35,7 @@ enum ButtonKind {
     OTHER,
 
     /**
-     * 「お題を出す」のボタン
+     * 「今日のお題を出す」のボタン
      */
-    RUN,
+    POP,
 }

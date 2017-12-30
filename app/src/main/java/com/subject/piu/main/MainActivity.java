@@ -4,25 +4,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.subject.piu.CommonParams;
 import com.subject.R;
-import com.subject.piu.chart.Chooser;
 
 public class MainActivity extends AppCompatActivity {
-    // デバッグ用のタグ
-    private static final String TAG = "MainActivity";
-
     // メイン画面にある全ボタン
-    private Button buttonStep, buttonDifficulty, buttonType, buttonSeries, buttonCategory, buttonOther, buttonRun;
+    Button buttonStep, buttonDifficulty, buttonType, buttonSeries, buttonCategory, buttonOther, buttonPop;
 
     // MainActivityのSharedPreferenceインスタンス
-    public SharedPreferences sp;
+    SharedPreferences sp;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -103,86 +97,11 @@ public class MainActivity extends AppCompatActivity {
         CommonParams.amPassOnlyUsedStepCheck = sp.getBoolean("amPassOnlyUsedStepCheck", false);
 
         // 「お題を出す」のボタンにリスナーをセット
-        buttonRun = findViewById(R.id.buttonRun);
-        buttonRun.setOnClickListener(new View.OnClickListener() {
+        buttonPop = findViewById(R.id.buttonPop);
+        buttonPop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 別スレッドでお題を出す
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // プログレスバーを初期化
-                                ((ProgressBar) mainActivity.findViewById(R.id.progressBarRun)).setProgress(0);
-
-                                // すべてのボタンをグレーアウトして押せなくする
-                                buttonStep.setEnabled(false);
-                                buttonDifficulty.setEnabled(false);
-                                buttonType.setEnabled(false);
-                                buttonSeries.setEnabled(false);
-                                buttonCategory.setEnabled(false);
-                                buttonOther.setEnabled(false);
-                                buttonRun.setEnabled(false);
-
-                                // 「今日のお題を出す」のボタンを「お待ちください…」に変更する
-                                buttonRun.setText(R.string.getting_charts);
-                            }
-                        });
-
-                        // お題の譜面の文字列を取得する
-                        String subjectMessage;
-                        try {
-                            subjectMessage = Chooser.run(mainActivity);
-                            if (subjectMessage != null) {
-                                subjectMessage = getString(R.string.run_result, Chooser.run(mainActivity));
-                            } else {
-                                // TODO : subjectMessageがnull(=該当する譜面が1つも存在しなかった)場合のメッセージ
-                            }
-                        } catch (Exception e) {
-                            switch (Chooser.cause) {
-                            case CONNECTION:
-                                // 通信エラーメッセージをセット
-                                subjectMessage = getString(R.string.error_connection);
-                                break;
-                            case URL:
-                                // URLエラーメッセージをセット
-                                subjectMessage = getString(R.string.error_url);
-                                break;
-                            case OTHER:
-                            default:
-                                // ログ出力
-                                Log.e(TAG, "onClick->" + e.getClass().toString());
-
-                                // システムエラーメッセージをセット
-                                subjectMessage = getString(R.string.error_system);
-                                break;
-                            }
-                        }
-                        final String finalSubjectMessage = subjectMessage;
-
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // お題を表示させるダイアログを表示
-                                CheckDialogFragment.newInstance(mainActivity, ButtonKind.RUN, finalSubjectMessage).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
-
-                                // 「お待ちください」のボタンを「今日のお題を出す」に変更する
-                                buttonRun.setText(R.string.run);
-
-                                // すべてのボタンをグレーアウトを解除して押せるようにする
-                                buttonStep.setEnabled(true);
-                                buttonDifficulty.setEnabled(true);
-                                buttonType.setEnabled(true);
-                                buttonSeries.setEnabled(true);
-                                buttonCategory.setEnabled(true);
-                                buttonOther.setEnabled(true);
-                                buttonRun.setEnabled(true);
-                            }
-                        });
-                    }
-                }).start();
+                new PoppingThread(mainActivity).start();
             }
         });
     }

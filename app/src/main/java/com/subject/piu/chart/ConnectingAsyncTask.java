@@ -11,9 +11,9 @@ import org.jsoup.nodes.Document;
 
 import java.net.UnknownHostException;
 
-class GettingHTMLTask extends AsyncTask<String, Void, Document> {
+class ConnectingAsyncTask extends AsyncTask<String, Void, Document> {
     // デバッグ用のタグ
-    private static final String TAG = "GettingHTMLTask";
+    private static final String TAG = "ConnectingAsyncTask";
 
     // スマートフォン用WebページをPC用として取得するユーザエージェントの指定
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";

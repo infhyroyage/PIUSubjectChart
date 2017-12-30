@@ -8,6 +8,8 @@ import com.subject.piu.CommonParams;
 import com.subject.piu.GettingHTMLError;
 import com.subject.piu.main.MainActivity;
 
+import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +23,7 @@ public abstract class Chooser {
     private static final String TAG = "Chooser";
 
     /**
-     * GettingHTMLTask.doInBackgroundメソッドでエラーが発生した原因
+     * ConnectingAsyncTask.doInBackgroundメソッドでエラーが発生した原因
      * choiceメソッドでIOExceptionがスローされた場合に値が格納される
      */
     public static GettingHTMLError cause;
@@ -31,10 +33,10 @@ public abstract class Chooser {
      * @param mainActivity メインアクティビティのインスタンス
      * @return 今日のお題の譜面を表した文字列、1日中に2回以上お題を出した場合はnull
      * @throws InterruptedException スレッドの割込みが発生した場合
-     * @throws ExecutionException GettingHTMLTask.doInBackgroundメソッドで例外がスローされた場合
-     * @throws IOException GettingHTMLTask.doInBackgroundメソッドでエラーが発生した場合
+     * @throws ExecutionException ConnectingAsyncTask.doInBackgroundメソッドで例外がスローされた場合
+     * @throws IOException ConnectingAsyncTask.doInBackgroundメソッドでエラーが発生した場合
      */
-    public static String run(MainActivity mainActivity) throws InterruptedException, ExecutionException, IOException {
+    public static String execute(MainActivity mainActivity) throws InterruptedException, ExecutionException, IOException {
         // スクレイピングを行った譜面リストを生成
         List<UnitChart> chartList = new CopyOnWriteArrayList<>();
 
@@ -54,22 +56,22 @@ public abstract class Chooser {
             String url = urlList.get(i);
 
             // ログ出力
-            Log.d(TAG, "run:start->execute,url=" + url);
+            Log.d(TAG, "execute:start->connect,url=" + url);
 
-            // TODO : あるシリーズのURLから、そのシリーズのHTMLドキュメントを取得
-            //Document doc = new GettingHTMLTask().execute(url).get();
-            //if (doc == null) throw new IOException();
-            Thread.sleep(500);
-            chartList.add(new UnitChart(String.valueOf(i)));
-
-            // ログ出力
-            Log.d(TAG, "run:execute->scrape,url=" + url);
-
-            // TODO : HTMLドキュメントからh3タグをスクレイピングして取得した譜面サブリストを譜面リストに格納
-            //chartList.addAll(Scraper.scrapeH3FromDocument(doc));
+            // あるシリーズのURLから、そのシリーズのHTMLドキュメントを取得
+            Document doc = new ConnectingAsyncTask().execute(url).get();
+            if (doc == null) throw new IOException();
+            //Thread.sleep(500);
+            //chartList.add(new UnitChart(String.valueOf(i)));
 
             // ログ出力
-            Log.d(TAG, "run:scrape->end,url=" + url);
+            Log.d(TAG, "execute:connect->scrape,url=" + url);
+
+            // HTMLドキュメントからh3タグをスクレイピングして取得した譜面サブリストを譜面リストに格納
+            chartList.addAll(Scraper.execute(doc));
+
+            // ログ出力
+            Log.d(TAG, "execute:scrape->end,url=" + url);
 
             // プログレスバーの進捗を1段階上げる(UIスレッドで実行)
             final int idx = i;
@@ -81,7 +83,11 @@ public abstract class Chooser {
             });
         }
 
-        // TODO : chartListが空だった(=該当する譜面が1つも存在しなかった)場合の対処
+        // chartListが空だった(=該当する譜面が1つも存在しなかった)場合、nullを返す
+        if (chartList.size() == 0) {
+            return null;
+        }
+
         // スクレイピングを行った譜面リストから、ランダムに1つの譜面を選ぶ
         UnitChart uc = chartList.get(new Random().nextInt(chartList.size()));
 

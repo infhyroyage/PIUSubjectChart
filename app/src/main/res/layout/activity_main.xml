@@ -14,7 +14,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/buttonRun"
+        android:layout_above="@id/buttonPop"
         android:layout_below="@id/progressBarRun">
 
         <LinearLayout
@@ -102,10 +102,10 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/buttonRun"
+        android:id="@+id/buttonPop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/run"
+        android:text="@string/pop"
         android:textSize="17sp"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>
