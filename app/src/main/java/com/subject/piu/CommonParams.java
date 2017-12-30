@@ -12,7 +12,7 @@ public abstract class CommonParams {
     /**
      * 「ステップ」のチェック状態
      */
-    public static boolean[] step = new boolean[STEPS.length];
+    public static boolean[] stepChecks = new boolean[STEPS.length];
 
     /**
      * 現行稼働の最低難易度
@@ -25,7 +25,7 @@ public abstract class CommonParams {
     /**
      * 「難易度」のチェック状態
      */
-    public static boolean[] difficulty = new boolean[MAX_DIFFICULTY - MIN_DIFFICULTY + 1];
+    public static boolean[] difficultyChecks = new boolean[MAX_DIFFICULTY - MIN_DIFFICULTY + 1];
 
     /**
      * 「種別」の種類
@@ -39,7 +39,7 @@ public abstract class CommonParams {
     /**
      * 「種別」のチェック状態
      */
-    public static boolean[] type = new boolean[TYPES.length];
+    public static boolean[] typeChecks = new boolean[TYPES.length];
 
     /**
      * 「シリーズ」の種類
@@ -70,7 +70,7 @@ public abstract class CommonParams {
     /**
      * 「シリーズ」のチェック状態
      */
-    public static boolean[] series = new boolean[SERIES.length];
+    public static boolean[] seriesChecks = new boolean[SERIES.length];
 
     /**
      * 「カテゴリー」の種類
@@ -85,7 +85,7 @@ public abstract class CommonParams {
     /**
      * 「カテゴリー」のチェック状態
      */
-    public static boolean[] category = new boolean[CATEGORIES.length];
+    public static boolean[] categoryChecks = new boolean[CATEGORIES.length];
 
     /**
      * PP解禁譜面の種類
@@ -94,7 +94,7 @@ public abstract class CommonParams {
     /**
      * PP解禁譜面のチェック状態
      */
-    public static boolean ppUnlockedStep = false;
+    public static boolean ppUnlockedStepCheck = false;
 
     /**
      * AM.PASS使用時限定譜面の種類
@@ -103,7 +103,7 @@ public abstract class CommonParams {
     /**
      * AM.PASS使用時限定譜面のチェック状態
      */
-    public static boolean amPassOnlyUsedStep = false;
+    public static boolean amPassOnlyUsedStepCheck = false;
 
     /**
      * MainActivityからDialogFragmentを表示するのに用いるタグ

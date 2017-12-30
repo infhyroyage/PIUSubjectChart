@@ -172,13 +172,13 @@ abstract class Scraper {
      */
     private static boolean isSkippedByType(String type) {
         // 「NORMAL」のスキップ判定
-        boolean normal = CommonParams.type[0] && type.equalsIgnoreCase(CommonParams.TYPES[0]);
+        boolean normal = CommonParams.typeChecks[0] && type.equalsIgnoreCase(CommonParams.TYPES[0]);
         // 「REMIX」のスキップ判定
-        boolean remix = CommonParams.type[1] && type.equalsIgnoreCase(CommonParams.TYPES[1]);
+        boolean remix = CommonParams.typeChecks[1] && type.equalsIgnoreCase(CommonParams.TYPES[1]);
         // 「FULL SONG」のスキップ判定
-        boolean fullSong = CommonParams.type[2] && type.equalsIgnoreCase(CommonParams.TYPES[2]);
+        boolean fullSong = CommonParams.typeChecks[2] && type.equalsIgnoreCase(CommonParams.TYPES[2]);
         // 「SHORT CUT」のスキップ判定
-        boolean shortCut = CommonParams.type[3] && type.equalsIgnoreCase(CommonParams.TYPES[3]);
+        boolean shortCut = CommonParams.typeChecks[3] && type.equalsIgnoreCase(CommonParams.TYPES[3]);
 
         return !(normal || remix || fullSong || shortCut);
     }
@@ -196,21 +196,21 @@ abstract class Scraper {
      */
     private static boolean isSkippedByCategory(String category) {
         // 「Original」のスキップ判定
-        boolean original = (CommonParams.category[0])
+        boolean original = (CommonParams.categoryChecks[0])
                 && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
         // 「K-POP」のスキップ判定
-        boolean kPop = (CommonParams.category[1])
+        boolean kPop = (CommonParams.categoryChecks[1])
                 && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
                 && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
         // 「World Music」のスキップ判定
-        boolean worldMusic = (CommonParams.category[2])
+        boolean worldMusic = (CommonParams.categoryChecks[2])
                 && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
                 && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
         // 「XROSS」のスキップ判定
-        boolean xross = (CommonParams.category[3])
+        boolean xross = (CommonParams.categoryChecks[3])
                 && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
         // 「J-Music」のスキップ判定
-        boolean jMusic = (CommonParams.category[4])
+        boolean jMusic = (CommonParams.categoryChecks[4])
                 && (category.charAt(0) == 'J' || category.charAt(0) == 'j')
                 && (category.substring(2, 7).equalsIgnoreCase(CommonParams.CATEGORIES[4].substring(2, 7)));
 
@@ -290,7 +290,7 @@ abstract class Scraper {
             String name = tr.child(0).text().trim();
 
             // 「ステップ」のチェック状態に応じて、「SINGLE」と「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
-            if (CommonParams.step[0]) {
+            if (CommonParams.stepChecks[0]) {
                 Element tdSingle = tds.get(2);
                 if (!tdSingle.html().equals("")) {
                     chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
@@ -337,19 +337,19 @@ abstract class Scraper {
             if (chartsStr.charAt(i) == '/') {
                 if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
                     // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-                    if (CommonParams.step[2]) {
+                    if (CommonParams.stepChecks[2]) {
                         chartSubList.add(new UnitChart(name));
                     }
                 } else {
                     // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-                    if (isDouble && !CommonParams.step[1]) {
+                    if (isDouble && !CommonParams.stepChecks[1]) {
                         continue;
                     }
 
                     try {
                         int difficulty = Integer.parseInt(workStr.toString().trim());
 
-                        if (CommonParams.difficulty[difficulty - 1]) {
+                        if (CommonParams.difficultyChecks[difficulty - 1]) {
                             chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                         }
                     } catch (Exception e) {
@@ -364,16 +364,16 @@ abstract class Scraper {
         }
         if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
             // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-            if (CommonParams.step[2]) {
+            if (CommonParams.stepChecks[2]) {
                 chartSubList.add(new UnitChart(name));
             }
         } else {
             // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-            if (!isDouble || CommonParams.step[1]) {
+            if (!isDouble || CommonParams.stepChecks[1]) {
                 try {
                     int difficulty = Integer.parseInt(workStr.toString().trim());
 
-                    if (CommonParams.difficulty[difficulty - 1]) {
+                    if (CommonParams.difficultyChecks[difficulty - 1]) {
                         chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                     }
                 } catch (Exception e) {
@@ -390,24 +390,24 @@ abstract class Scraper {
              * ・AM.PASS使用時限定譜面 : #0075c8または#009e25を含む
              * 上記譜面以外は、譜面サブリストに入れない
              */
-            boolean other = span.attributes().get("style").contains("#ffaa00") && CommonParams.ppUnlockedStep;
-            other = other || span.attributes().get("style").contains("#0075c8") && CommonParams.amPassOnlyUsedStep;
-            other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStep;
+            boolean other = span.attributes().get("style").contains("#ffaa00") && CommonParams.ppUnlockedStepCheck;
+            other = other || span.attributes().get("style").contains("#0075c8") && CommonParams.amPassOnlyUsedStepCheck;
+            other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStepCheck;
             if (other) {
                 if (span.text().trim().contains("COOP") || span.text().trim().contains("CO-OP")) {
                     // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-                    if (CommonParams.step[2]) {
+                    if (CommonParams.stepChecks[2]) {
                         chartSubList.add(new UnitChart(name));
                     }
                 } else {
                     // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-                    if (isDouble && !CommonParams.step[1]) {
+                    if (isDouble && !CommonParams.stepChecks[1]) {
                         continue;
                     }
 
                     try {
                         int difficulty = Integer.parseInt(span.text().trim());
-                        if (CommonParams.difficulty[difficulty - 1]) {
+                        if (CommonParams.difficultyChecks[difficulty - 1]) {
                             chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                         }
                     } catch (Exception e) {

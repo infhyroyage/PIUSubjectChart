@@ -3,6 +3,7 @@ package com.subject.piu.main;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -90,7 +91,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     TableLayout tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
                     // 「ステップ」の個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.step.length; i++) {
+                    for (int i = 0; i < CommonParams.stepChecks.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
                         row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
@@ -104,40 +105,47 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                         // Switchの格納
                         Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.step[i]);
+                        s.setChecked(CommonParams.stepChecks[i]);
                         s.setPadding(0, 0, (int) (20 * dp), 0);
                         final int idx = i;
                         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.step[idx] = isChecked;
+                                CommonParams.stepChecks[idx] = isChecked;
                             }
                         });
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
                     // 「ステップ」のON/OFF状態をバックアップ
-                    backup = CommonParams.step.clone();
+                    backup = CommonParams.stepChecks.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    if (Arrays.equals(CommonParams.step, new boolean[CommonParams.step.length])) {
-                                        // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    if (Arrays.equals(CommonParams.stepChecks, new boolean[CommonParams.stepChecks.length])) {
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.step = backup.clone();
+                                        CommonParams.stepChecks = backup.clone();
                                     } else {
-                                        // 上記以外の場合は、「難易度」のボタンの下にあるTextViewの文字を更新
-                                        mainActivity.updateTextByCheck(ButtonKind.STEP);
+                                        // 「ステップ」のチェック状態をSharedPreferenceに保存
+                                        SharedPreferences.Editor editor = mainActivity.sp.edit();
+                                        for (int i = 0; i < CommonParams.stepChecks.length; i++) {
+                                            editor = editor.putBoolean("stepChecks[" + i + "]", CommonParams.stepChecks[i]);
+                                        }
+                                        editor.apply();
+
+                                        // 「ステップ」のボタンの下にあるTextViewの文字を更新
+                                        mainActivity.updateTextViewUnderButton(ButtonKind.STEP);
                                     }
                                 }
                             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.step = backup.clone();
+                            CommonParams.stepChecks = backup.clone();
                         }
                     });
 
@@ -148,7 +156,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
                     // MIN_DIFFICULTY〜MAX_DIFFICULTYの個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.difficulty.length; i++) {
+                    for (int i = 0; i < CommonParams.difficultyChecks.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
                         row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
@@ -162,40 +170,47 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                         // Switchの格納
                         Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.difficulty[i]);
+                        s.setChecked(CommonParams.difficultyChecks[i]);
                         s.setPadding(0, 0, (int) (20 * dp), 0);
                         final int idx = i;
                         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.difficulty[idx] = isChecked;
+                                CommonParams.difficultyChecks[idx] = isChecked;
                             }
                         });
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
                     // 「難易度」のON/OFF状態をバックアップ
-                    backup = CommonParams.difficulty.clone();
+                    backup = CommonParams.difficultyChecks.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    if (Arrays.equals(CommonParams.difficulty, new boolean[CommonParams.difficulty.length])) {
-                                        // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    if (Arrays.equals(CommonParams.difficultyChecks, new boolean[CommonParams.difficultyChecks.length])) {
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.difficulty = backup.clone();
+                                        CommonParams.difficultyChecks = backup.clone();
                                     } else {
-                                        // 上記以外の場合は、「難易度」のボタンの下にあるTextViewの文字を更新
-                                        mainActivity.updateTextByCheck(ButtonKind.DIFFICULTY);
+                                        // 「難易度」のチェック状態をSharedPreferenceに保存
+                                        SharedPreferences.Editor editor = mainActivity.sp.edit();
+                                        for (int i = 0; i < CommonParams.difficultyChecks.length; i++) {
+                                            editor = editor.putBoolean("difficultyChecks[" + i + "]", CommonParams.difficultyChecks[i]);
+                                        }
+                                        editor.apply();
+
+                                        // 「難易度」のボタンの下にあるTextViewの文字を更新
+                                        mainActivity.updateTextViewUnderButton(ButtonKind.DIFFICULTY);
                                     }
                                 }
                             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     // バックアップしたON/OFFの状態をセット
-                                     CommonParams.difficulty = backup.clone();
+                                     CommonParams.difficultyChecks = backup.clone();
                                 }
                     });
 
@@ -206,7 +221,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
                     // 「タイプ」の個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.type.length; i++) {
+                    for (int i = 0; i < CommonParams.typeChecks.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
                         row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
@@ -220,40 +235,47 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                         // Switchの格納
                         Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.type[i]);
+                        s.setChecked(CommonParams.typeChecks[i]);
                         s.setPadding(0, 0, (int) (20 * dp), 0);
                         final int idx = i;
                         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.type[idx] = isChecked;
+                                CommonParams.typeChecks[idx] = isChecked;
                             }
                         });
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
                     // 「タイプ」のON/OFF状態をバックアップ
-                    backup = CommonParams.type.clone();
+                    backup = CommonParams.typeChecks.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    if (Arrays.equals(CommonParams.type, new boolean[CommonParams.type.length])) {
-                                        // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    if (Arrays.equals(CommonParams.typeChecks, new boolean[CommonParams.typeChecks.length])) {
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.type = backup.clone();
+                                        CommonParams.typeChecks = backup.clone();
                                     } else {
-                                        // 上記以外の場合は、「シリーズ」のボタンの下にあるTextViewの文字を更新
-                                        mainActivity.updateTextByCheck(ButtonKind.TYPE);
+                                        // 「タイプ」のチェック状態をSharedPreferenceに保存
+                                        SharedPreferences.Editor editor = mainActivity.sp.edit();
+                                        for (int i = 0; i < CommonParams.typeChecks.length; i++) {
+                                            editor = editor.putBoolean("typeChecks[" + i + "]", CommonParams.typeChecks[i]);
+                                        }
+                                        editor.apply();
+
+                                        // 「タイプ」のボタンの下にあるTextViewの文字を更新
+                                        mainActivity.updateTextViewUnderButton(ButtonKind.TYPE);
                                     }
                                 }
                             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.type = backup.clone();
+                            CommonParams.typeChecks = backup.clone();
                         }
                     });
 
@@ -264,7 +286,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
                     // 「シリーズ」の個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.series.length; i++) {
+                    for (int i = 0; i < CommonParams.seriesChecks.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
                         row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
@@ -278,40 +300,47 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                         // Switchの格納
                         Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.series[i]);
+                        s.setChecked(CommonParams.seriesChecks[i]);
                         s.setPadding(0, 0, (int) (20 * dp), 0);
                         final int idx = i;
                         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.series[idx] = isChecked;
+                                CommonParams.seriesChecks[idx] = isChecked;
                             }
                         });
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
                     // 「シリーズ」のON/OFF状態をバックアップ
-                    backup = CommonParams.series.clone();
+                    backup = CommonParams.seriesChecks.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    if (Arrays.equals(CommonParams.series, new boolean[CommonParams.series.length])) {
-                                        // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    if (Arrays.equals(CommonParams.seriesChecks, new boolean[CommonParams.seriesChecks.length])) {
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.series = backup.clone();
+                                        CommonParams.seriesChecks = backup.clone();
                                     } else {
-                                        // 上記以外の場合は、「シリーズ」のボタンの下にあるTextViewの文字を更新
-                                        mainActivity.updateTextByCheck(ButtonKind.SERIES);
+                                        // 「シリーズ」のチェック状態をSharedPreferenceに保存
+                                        SharedPreferences.Editor editor = mainActivity.sp.edit();
+                                        for (int i = 0; i < CommonParams.seriesChecks.length; i++) {
+                                            editor = editor.putBoolean("seriesChecks[" + i + "]", CommonParams.seriesChecks[i]);
+                                        }
+                                        editor.apply();
+
+                                        // 「シリーズ」のボタンの下にあるTextViewの文字を更新
+                                        mainActivity.updateTextViewUnderButton(ButtonKind.SERIES);
                                     }
                                 }
                             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.series = backup.clone();
+                            CommonParams.seriesChecks = backup.clone();
                         }
                     });
 
@@ -322,7 +351,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                     tableLayout = switchesView.findViewById(R.id.switchingLayout);
 
                     // 「カテゴリー」の個数分だけ1行生成して格納
-                    for (int i = 0; i < CommonParams.category.length; i++) {
+                    for (int i = 0; i < CommonParams.categoryChecks.length; i++) {
                         // TableRowの格納
                         TableRow row = new TableRow(mainActivity);
                         row.setPadding(0, (int) (10 * dp), 0, (int) (10 * dp));
@@ -336,40 +365,47 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                         // Switchの格納
                         Switch s = new Switch(mainActivity);
-                        s.setChecked(CommonParams.category[i]);
+                        s.setChecked(CommonParams.categoryChecks[i]);
                         s.setPadding(0, 0, (int) (20 * dp), 0);
                         final int idx = i;
                         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                CommonParams.category[idx] = isChecked;
+                                CommonParams.categoryChecks[idx] = isChecked;
                             }
                         });
                         row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                     }
 
                     // 「カテゴリー」のON/OFF状態をバックアップ
-                    backup = CommonParams.category.clone();
+                    backup = CommonParams.categoryChecks.clone();
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    if (Arrays.equals(CommonParams.category, new boolean[CommonParams.category.length])) {
-                                        // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    // SwitchがすべてOFFの場合は更新せず、バックアップしたON/OFFの状態をセット
+                                    if (Arrays.equals(CommonParams.categoryChecks, new boolean[CommonParams.categoryChecks.length])) {
                                         Toast.makeText(mainActivity, R.string.error_all_off, Toast.LENGTH_SHORT).show();
-                                        CommonParams.category = backup.clone();
+                                        CommonParams.categoryChecks = backup.clone();
                                     } else {
-                                        // 上記以外の場合は、「カテゴリー」のボタンの下にあるTextViewの文字を更新
-                                        mainActivity.updateTextByCheck(ButtonKind.CATEGORY);
+                                        // 「カテゴリー」のチェック状態をSharedPreferenceに保存
+                                        SharedPreferences.Editor editor = mainActivity.sp.edit();
+                                        for (int i = 0; i < CommonParams.categoryChecks.length; i++) {
+                                             editor = editor.putBoolean("categoryChecks[" + i + "]", CommonParams.categoryChecks[i]);
+                                        }
+                                        editor.apply();
+
+                                        // 「カテゴリー」のボタンの下にあるTextViewの文字を更新
+                                        mainActivity.updateTextViewUnderButton(ButtonKind.CATEGORY);
                                     }
                                 }
                             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.category = backup.clone();
+                            CommonParams.categoryChecks = backup.clone();
                         }
                     });
 
@@ -392,12 +428,12 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                     // 「PP解禁譜面を含む」のSwitchの格納
                     Switch s = new Switch(mainActivity);
-                    s.setChecked(CommonParams.ppUnlockedStep);
+                    s.setChecked(CommonParams.ppUnlockedStepCheck);
                     s.setPadding(0, 0, (int) (20 * dp), 0);
                     s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            CommonParams.ppUnlockedStep = isChecked;
+                            CommonParams.ppUnlockedStepCheck = isChecked;
                         }
                     });
                     row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -415,34 +451,51 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
 
                     // 「AM.PASS使用時限定譜面を含む」のSwitchの格納
                     s = new Switch(mainActivity);
-                    s.setChecked(CommonParams.amPassOnlyUsedStep);
+                    s.setChecked(CommonParams.amPassOnlyUsedStepCheck);
                     s.setPadding(0, 0, (int) (20 * dp), 0);
                     s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            CommonParams.amPassOnlyUsedStep = isChecked;
+                            CommonParams.amPassOnlyUsedStepCheck = isChecked;
                         }
                     });
                     row.addView(s, new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
                     // 「その他」のON/OFF状態をバックアップ
-                    final boolean backupPpUnlockedStep = CommonParams.ppUnlockedStep;
-                    final boolean backupAmPassOnlyUsedStep = CommonParams.amPassOnlyUsedStep;
+                    final boolean backupPpUnlockedStep = CommonParams.ppUnlockedStepCheck;
+                    final boolean backupAmPassOnlyUsedStep = CommonParams.amPassOnlyUsedStepCheck;
 
                     builder.setView(switchesView)
                             .setTitle(getArguments().getString("args[0]"))
-                            .setPositiveButton(R.string.ok, null).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // チェック状態をSharedPreferenceに保存
+                                    mainActivity.sp.edit()
+                                            .putBoolean("ppUnlockedStepCheck", CommonParams.ppUnlockedStepCheck)
+                                            .putBoolean("amPassOnlyUsedStepCheck", CommonParams.amPassOnlyUsedStepCheck)
+                                            .apply();
+                                }
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // バックアップしたON/OFFの状態をセット
-                            CommonParams.ppUnlockedStep = backupPpUnlockedStep;
-                            CommonParams.amPassOnlyUsedStep = backupAmPassOnlyUsedStep;
+                            CommonParams.ppUnlockedStepCheck = backupPpUnlockedStep;
+                            CommonParams.amPassOnlyUsedStepCheck = backupAmPassOnlyUsedStep;
                         }
                     });
 
                     return builder.create();
                 case RUN:
-                    return builder.setMessage(getArguments().getString("args[0]")).setPositiveButton(R.string.ok, null).create();
+                    return builder.setMessage(getArguments().getString("args[0]"))
+                            .setPositiveButton(R.string.ok, null)
+                            .setNeutralButton(R.string.share, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // TODO : 共有
+                                }
+                            })
+                            .create();
                 default:
                     throw new IllegalArgumentException("The ButtonKind argument cannot be applied.");
             }

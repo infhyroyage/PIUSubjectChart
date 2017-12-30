@@ -12,8 +12,9 @@
     <string name="other">その他</string>
     <string name="ok">OK</string>
     <string name="run">今日のお題を出す</string>
-    <string name="run_result">今日のお題は「%1$s」です。</string>
+    <string name="run_result">今日のお題は「%1$s」です。頑張ってください！</string>
     <string name="series">シリーズ</string>
+    <string name="share">共有</string>
     <string name="step">ステップ</string>
     <string name="type">種別</string>
 </resources>

@@ -29,7 +29,7 @@ public abstract class Chooser {
     /**
      * 今日のお題を出す
      * @param mainActivity メインアクティビティのインスタンス
-     * @return 今日のお題の譜面を表した文字列
+     * @return 今日のお題の譜面を表した文字列、1日中に2回以上お題を出した場合はnull
      * @throws InterruptedException スレッドの割込みが発生した場合
      * @throws ExecutionException GettingHTMLTask.doInBackgroundメソッドで例外がスローされた場合
      * @throws IOException GettingHTMLTask.doInBackgroundメソッドでエラーが発生した場合
@@ -40,8 +40,8 @@ public abstract class Chooser {
 
         // 「シリーズ」のチェック状態に応じて、各シリーズのURLを取得
         List<String> urlList = new ArrayList<>();
-        for (int i = 0; i < CommonParams.series.length; i++) {
-            if (CommonParams.series[i]) {
+        for (int i = 0; i < CommonParams.seriesChecks.length; i++) {
+            if (CommonParams.seriesChecks[i]) {
                 urlList.addAll(Arrays.asList(CommonParams.SERIES_URL[i]));
             }
         }
@@ -81,6 +81,7 @@ public abstract class Chooser {
             });
         }
 
+        // TODO : chartListが空だった(=該当する譜面が1つも存在しなかった)場合の対処
         // スクレイピングを行った譜面リストから、ランダムに1つの譜面を選ぶ
         UnitChart uc = chartList.get(new Random().nextInt(chartList.size()));
 
