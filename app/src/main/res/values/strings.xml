@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PIU 今日のお題メーカー</string>
+    <string name="app_name">PIU 今日のお題メーカー(プロトタイプ)</string>
     <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
     <string name="current">現在の状態 : %1$s</string>
