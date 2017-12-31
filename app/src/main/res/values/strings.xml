@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PIU 今日のお題メーカー(プロトタイプ)</string>
+    <string name="app_name">PIU 今日のお題メーカー</string>
     <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
     <string name="current">現在の状態 : %1$s</string>
@@ -14,7 +14,7 @@
     <string name="other">その他</string>
     <string name="pop">今日のお題を出す</string>
     <string name="pop_not_found">指定した条件に合致する譜面が見つかりません。\n条件を変更してください。</string>
-    <string name="pop_result">今日のお題は「%1$s」です。頑張ってください！</string>
+    <string name="pop_result">今日のお題は%1$sです。頑張ってください！</string>
     <string name="series">シリーズ</string>
     <string name="share">共有</string>
     <string name="step">ステップ</string>

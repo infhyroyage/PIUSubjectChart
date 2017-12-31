@@ -10,6 +10,7 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,8 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
-        // ダイアログを生成し、タイトルを取得してセット
+        // ダイアログとそのビルダーを生成
+        Dialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         if (getArguments() == null) {
             throw new IllegalStateException("CheckDialogFragment.getArguments() returns null.");
@@ -145,9 +147,20 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // バックアップしたON/OFFの状態をセット
                         CommonParams.stepChecks = backup.clone();
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.stepChecks = backup.clone();
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case DIFFICULTY:
                 // TableLayoutの取得
                 switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
@@ -210,9 +223,21 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // バックアップしたON/OFFの状態をセット
                         CommonParams.difficultyChecks = backup.clone();
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.difficultyChecks = backup.clone();
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                // ビルダーからダイアログを生成し、ダイアログ外をタップしても閉じないようにセット
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case TYPE:
                 // TableLayoutの取得
                 switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
@@ -275,9 +300,21 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // バックアップしたON/OFFの状態をセット
                         CommonParams.typeChecks = backup.clone();
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.typeChecks = backup.clone();
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                // ビルダーからダイアログを生成し、ダイアログ外をタップしても閉じないようにセット
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case SERIES:
                 // TableLayoutの取得
                 switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
@@ -340,9 +377,21 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // バックアップしたON/OFFの状態をセット
                         CommonParams.seriesChecks = backup.clone();
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.seriesChecks = backup.clone();
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                // ビルダーからダイアログを生成し、ダイアログ外をタップしても閉じないようにセット
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case CATEGORY:
                 // TableLayoutの取得
                 switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
@@ -405,9 +454,21 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         // バックアップしたON/OFFの状態をセット
                         CommonParams.categoryChecks = backup.clone();
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.categoryChecks = backup.clone();
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                // ビルダーからダイアログを生成し、ダイアログ外をタップしても閉じないようにセット
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case OTHER:
                 // TableLayoutの取得
                 switchesView = inflater.inflate(R.layout.switching_dialog, (ViewGroup) mainActivity.findViewById(R.id.switchingLayout));
@@ -464,6 +525,7 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                 final boolean backupAmPassOnlyUsedStep = CommonParams.amPassOnlyUsedStepCheck;
 
                 builder.setView(switchesView)
+                        .setCancelable(false)
                         .setTitle(getArguments().getString("args[0]"))
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
@@ -481,9 +543,22 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         CommonParams.ppUnlockedStepCheck = backupPpUnlockedStep;
                         CommonParams.amPassOnlyUsedStepCheck = backupAmPassOnlyUsedStep;
                     }
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                        // Backキーを押した場合、バックアップしたON/OFFの状態をセット
+                        if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                            CommonParams.ppUnlockedStepCheck = backupPpUnlockedStep;
+                            CommonParams.amPassOnlyUsedStepCheck = backupAmPassOnlyUsedStep;
+                        }
+                        return false;
+                    }
                 });
 
-                return builder.create();
+                // ビルダーからダイアログを生成し、ダイアログ外をタップしても閉じないようにセット
+                dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                return dialog;
             case POP:
                 final String message = getArguments().getString("args[0]");
                 builder = builder.setMessage(message)
@@ -500,6 +575,8 @@ public class CheckDialogFragment extends AppCompatDialogFragment {
                         }
                     });
                 }
+
+                // ビルダーからダイアログを生成
                 return builder.create();
             default:
                 throw new IllegalArgumentException("The ButtonKind argument cannot be applied.");
