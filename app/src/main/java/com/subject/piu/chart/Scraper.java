@@ -16,12 +16,12 @@ abstract class Scraper {
     private static final String TAG = "Scraper";
 
     /**
-     * 指定されたあるシリーズのHTMLドキュメントから、h3タグをスクレイピングする
+     * 指定されたシリーズのHTMLドキュメントから、h3タグをスクレイピングする
      * @param doc あるシリーズのHTMLドキュメント
-     * @return あるシリーズの譜面サブリスト
+     * @return 指定されたシリーズの譜面サブリスト
      */
     static List<UnitChart> execute(Document doc) {
-        // 指定されたあるシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
+        // 指定されたシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
         /*
@@ -32,64 +32,78 @@ abstract class Scraper {
          *  ・SHORT CUT
          *  ・PRIME2で復活・削除した曲
          *  また、シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」の場合は、h4タグをスクレイピングする
+         *  また、シリーズが「コメントをかく」の場合はこれ以上譜面を取得できないのでbreakする
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
             String type = h3.text().trim();
-            if (type.equals("PRIME2でプレイ可能になったPRIME JE未収録曲")) {
-                // ログ出力
-                Log.d(TAG, "scrapeH3FromDocument:type=" + type);
 
+            // ログ出力
+            Log.d(TAG, "execute:type=" + type);
+
+            if (type.equals("コメントをかく")) {
+                break;
+            } else if (type.equals("PRIME2でプレイ可能になったPRIME JE未収録曲")) {
                 chartSubList.addAll(scrapeH4FromH3(h3));
                 continue;
             } else if (isSkippedByType(type) && !type.equals("PRIME2で復活・削除した曲")) {
                 continue;
             }
 
-            // ログ出力
-            Log.d(TAG, "scrapeH3FromDocument:type=" + type);
+            chartSubList.addAll(scrapeH3(h3));
+        }
 
+        return chartSubList;
+    }
 
-            // h3タグの親の親のタグを、現在の基準タグとして取得
-            Element divCurrent = h3.parent().parent();
-            // 現在の基準タグより先にある、同階層のタグを取得
-            for (int idx = divCurrent.elementSiblingIndex() + 1; idx < divCurrent.parent().children().size(); idx++) {
-                Element divIdx = divCurrent.parent().children().get(idx);
+    /**
+     * 指定されたあるシリーズのHTMLドキュメントにある、h3タグをスクレイピングする
+     * @param h3 あるシリーズのHTMLドキュメントにあるh3タグ
+     * @return 指定されたシリーズの譜面サブリスト
+     */
+    private static List<UnitChart> scrapeH3(Element h3) {
+        // 指定されたシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
+        List<UnitChart> chartSubList = new ArrayList<>();
 
-                // 同階層のタグの最初の子供の最初の子供のタグを取得する
-                Element divHeader = divIdx.child(0).child(0);
+        // h3タグの親の親のタグを、現在の基準タグとして取得
+        Element divCurrent = h3.parent().parent();
+        // 現在の基準タグより先にある、同階層のタグを取得
+        for (int idx = divCurrent.elementSiblingIndex() + 1; idx < divCurrent.parent().children().size(); idx++) {
+            Element divIdx = divCurrent.parent().children().get(idx);
+
+            // 同階層のタグの最初の子供の最初の子供のタグを取得する
+            Element divHeader = divIdx.child(0).child(0);
+            /*
+             * 上記タグがh3タグなら、別の種別をスクレイピングしてしまうのでbreakする
+             * h4タグならカテゴリーが変化するのでそれを抽出する
+             * h4タグのカテゴリーが「復活曲」の場合は、「Original」の曲しか存在しないので
+             * カテゴリーを「Original」に変化し、「削除曲」の場合はスキップする
+             */
+            if (divHeader.tagName().equals("h3")) {
+                break;
+            } else if (divHeader.tagName().equals("h4")) {
+                String category = divHeader.text().trim();
+                if (category.contains("復活")) {
+                    category = "Original";
+                } else if (category.contains("削除")) {
+                    continue;
+                }
+
                 /*
-                 * 上記タグがh3タグなら、別の種別をスクレイピングしてしまうのでbreakする
-                 * h4タグならカテゴリーが変化するのでそれを抽出する
-                 * h4タグのカテゴリーが「復活曲」の場合は、「Original」の曲しか存在しないので
-                 * カテゴリーを「Original」に変化し、「削除曲」の場合はスキップする
+                 * 抽出したカテゴリーから、以下と異なる場合はスキップする
+                 *  ・Original
+                 *  ・K-POP
+                 *  ・World Music
+                 *  ・XROSS
+                 *  ・J-Music
                  */
-                if (divHeader.tagName().equals("h3")) {
-                    break;
-                } else if (divHeader.tagName().equals("h4")) {
-                    String category = divHeader.text().trim();
-                    if (category.contains("復活")) {
-                        category = "Original";
-                    } else if (category.contains("削除")) {
-                        continue;
-                    }
+                if (isSkippedByCategory(category)) continue;
 
-                    /*
-                     * 抽出したカテゴリーから、以下と異なる場合はスキップする
-                     *  ・Original
-                     *  ・K-POP
-                     *  ・World Music
-                     *  ・XROSS
-                     *  ・J-Music
-                     */
-                    if (isSkippedByCategory(category)) continue;
+                // ログ出力
+                Log.d(TAG, "scrapeH3:category=" + category);
 
-                    // ログ出力
-                    Log.d(TAG, "scrapeH3FromDocument:category=" + category);
-
-                    // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
-                    for (Element table : selectTablesFromNonSkippedCategory(divIdx, category)) {
-                        chartSubList.addAll(scrapeTdFromTable(table));
-                    }
+                // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
+                for (Element table : selectTablesFromNonSkippedCategory(divIdx, category)) {
+                    chartSubList.addAll(scrapeTdFromTable(table));
                 }
             }
         }
@@ -153,65 +167,6 @@ abstract class Scraper {
         }
 
         return chartSubList;
-    }
-
-    /**
-     * 「種別」のチェック状態と、指定されたh3/h4タグのテキストにおける
-     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
-     *  ・NORMAL
-     *  ・REMIX
-     *  ・FULL SONG
-     *  ・SHORT CUT
-     *  ・PRIME2で復活・削除した曲
-     *  ・PRIME2でプレイ可能になったPRIME JE未収録曲
-     * @param type h3/h4タグのインスタンスのテキスト
-     * @return スキップする場合はtrue、スキップしない場合はfalse
-     */
-    private static boolean isSkippedByType(String type) {
-        // 「NORMAL」のスキップ判定
-        boolean normal = CommonParams.typeChecks[0] && type.equalsIgnoreCase(CommonParams.TYPES[0]);
-        // 「REMIX」のスキップ判定
-        boolean remix = CommonParams.typeChecks[1] && type.equalsIgnoreCase(CommonParams.TYPES[1]);
-        // 「FULL SONG」のスキップ判定
-        boolean fullSong = CommonParams.typeChecks[2] && type.equalsIgnoreCase(CommonParams.TYPES[2]);
-        // 「SHORT CUT」のスキップ判定
-        boolean shortCut = CommonParams.typeChecks[3] && type.equalsIgnoreCase(CommonParams.TYPES[3]);
-
-        return !(normal || remix || fullSong || shortCut);
-    }
-
-    /**
-     * 「カテゴリー」のチェック状態と、指定されたh4/h5タグのテキストにおける
-     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
-     *  ・Original
-     *  ・K-POP
-     *  ・World Music
-     *  ・XROSS
-     *  ・J-Music
-     * @param category h4/h5タグのインスタンスのテキスト
-     * @return スキップする場合はtrue、スキップしない場合はfalse
-     */
-    private static boolean isSkippedByCategory(String category) {
-        // 「Original」のスキップ判定
-        boolean original = (CommonParams.categoryChecks[0])
-                && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
-        // 「K-POP」のスキップ判定
-        boolean kPop = (CommonParams.categoryChecks[1])
-                && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
-                && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
-        // 「World Music」のスキップ判定
-        boolean worldMusic = (CommonParams.categoryChecks[2])
-                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
-                && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
-        // 「XROSS」のスキップ判定
-        boolean xross = (CommonParams.categoryChecks[3])
-                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
-        // 「J-Music」のスキップ判定
-        boolean jMusic = (CommonParams.categoryChecks[4])
-                && (category.charAt(0) == 'J' || category.charAt(0) == 'j')
-                && (category.substring(2, 7).equalsIgnoreCase(CommonParams.CATEGORIES[4].substring(2, 7)));
-
-        return !(original || kPop || worldMusic || xross || jMusic);
     }
 
     /**
@@ -415,6 +370,65 @@ abstract class Scraper {
         }
 
         return chartSubList;
+    }
+
+    /**
+     * 「種別」のチェック状態と、指定されたh3/h4タグのテキストにおける
+     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
+     *  ・NORMAL
+     *  ・REMIX
+     *  ・FULL SONG
+     *  ・SHORT CUT
+     *  ・PRIME2で復活・削除した曲
+     *  ・PRIME2でプレイ可能になったPRIME JE未収録曲
+     * @param type h3/h4タグのインスタンスのテキスト
+     * @return スキップする場合はtrue、スキップしない場合はfalse
+     */
+    private static boolean isSkippedByType(String type) {
+        // 「NORMAL」のスキップ判定
+        boolean normal = CommonParams.typeChecks[0] && type.equalsIgnoreCase(CommonParams.TYPES[0]);
+        // 「REMIX」のスキップ判定
+        boolean remix = CommonParams.typeChecks[1] && type.equalsIgnoreCase(CommonParams.TYPES[1]);
+        // 「FULL SONG」のスキップ判定
+        boolean fullSong = CommonParams.typeChecks[2] && type.equalsIgnoreCase(CommonParams.TYPES[2]);
+        // 「SHORT CUT」のスキップ判定
+        boolean shortCut = CommonParams.typeChecks[3] && type.equalsIgnoreCase(CommonParams.TYPES[3]);
+
+        return !(normal || remix || fullSong || shortCut);
+    }
+
+    /**
+     * 「カテゴリー」のチェック状態と、指定されたh4/h5タグのテキストにおける
+     * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
+     *  ・Original
+     *  ・K-POP
+     *  ・World Music
+     *  ・XROSS
+     *  ・J-Music
+     * @param category h4/h5タグのインスタンスのテキスト
+     * @return スキップする場合はtrue、スキップしない場合はfalse
+     */
+    private static boolean isSkippedByCategory(String category) {
+        // 「Original」のスキップ判定
+        boolean original = (CommonParams.categoryChecks[0])
+                && (category.equalsIgnoreCase(CommonParams.CATEGORIES[0]));
+        // 「K-POP」のスキップ判定
+        boolean kPop = (CommonParams.categoryChecks[1])
+                && (category.charAt(0) == 'K' || category.charAt(0) == 'k')
+                && (category.substring(2, 5).equalsIgnoreCase(CommonParams.CATEGORIES[1].substring(2, 5)));
+        // 「World Music」のスキップ判定
+        boolean worldMusic = (CommonParams.categoryChecks[2])
+                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(0, 5)))
+                && (category.substring(6, 11).equalsIgnoreCase(CommonParams.CATEGORIES[2].substring(6, 11)));
+        // 「XROSS」のスキップ判定
+        boolean xross = (CommonParams.categoryChecks[3])
+                && (category.substring(0, 5).equalsIgnoreCase(CommonParams.CATEGORIES[3]));
+        // 「J-Music」のスキップ判定
+        boolean jMusic = (CommonParams.categoryChecks[4])
+                && (category.charAt(0) == 'J' || category.charAt(0) == 'j')
+                && (category.substring(2, 7).equalsIgnoreCase(CommonParams.CATEGORIES[4].substring(2, 7)));
+
+        return !(original || kPop || worldMusic || xross || jMusic);
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする

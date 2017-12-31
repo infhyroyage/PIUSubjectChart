@@ -49,7 +49,7 @@ public abstract class Chooser {
         }
 
         // プログレスバーを取得し、最大値を設定
-        final ProgressBar progressBarRun = mainActivity.findViewById(R.id.progressBarRun);
+        final ProgressBar progressBarRun = mainActivity.findViewById(R.id.progressBarPop);
         progressBarRun.setMax(urlList.size());
 
         for (int i = 0; i < urlList.size(); i++) {
@@ -61,6 +61,7 @@ public abstract class Chooser {
             // あるシリーズのURLから、そのシリーズのHTMLドキュメントを取得
             Document doc = new ConnectingAsyncTask().execute(url).get();
             if (doc == null) throw new IOException();
+            // TODO : あとで消す
             //Thread.sleep(500);
             //chartList.add(new UnitChart(String.valueOf(i)));
 

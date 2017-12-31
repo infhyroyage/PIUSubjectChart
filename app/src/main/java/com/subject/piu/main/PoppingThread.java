@@ -2,6 +2,7 @@ package com.subject.piu.main;
 
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.subject.R;
 import com.subject.piu.CommonParams;
@@ -29,9 +30,9 @@ class PoppingThread extends Thread {
     @Override
     public void run() {
         // 現在の日付を取得
-        String nowPop = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        String nowPop = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
         // 以前にお題を出した日付の文字列を取得
-        String oldPop = mainActivity.sp.getString("oldPop", "");
+        String oldPop = mainActivity.sp.getString("oldPop", "----/--/--");
 
         // ログ出力
         Log.d(TAG, "onclick:nowPop=" + nowPop + ",oldPop=" + oldPop);
@@ -45,13 +46,14 @@ class PoppingThread extends Thread {
             // 既に出したお題の譜面の文字列を取得する
             String subject = mainActivity.sp.getString("subject", "");
 
-            CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, mainActivity.getString(R.string.pop_result, subject)).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+            CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, mainActivity.getString(R.string.pop_result, subject), "share")
+                    .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
         } else {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // プログレスバーを初期化
-                    ((ProgressBar) mainActivity.findViewById(R.id.progressBarRun)).setProgress(0);
+                    ((ProgressBar) mainActivity.findViewById(R.id.progressBarPop)).setProgress(0);
 
                     // すべてのボタンをグレーアウトして押せなくする
                     mainActivity.buttonStep.setEnabled(false);
@@ -69,21 +71,26 @@ class PoppingThread extends Thread {
 
             // お題の譜面の文字列を取得する
             String subjectMessage;
+            boolean isShared = false;
             try {
                 String subject = Chooser.execute(mainActivity);
                 if (subject != null) {
                     subjectMessage = mainActivity.getString(R.string.pop_result, subject);
+                    isShared = true;
 
                     // 取得日付と、取得したお題の譜面の文字列を保存する
                     mainActivity.sp.edit()
                             .putString("subject", subject)
-                            .putString("oldPop", new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(Calendar.getInstance().getTime()))
+                            .putString("oldPop", new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime()))
                             .apply();
                 } else {
                     // subjectMessageがnull(=該当する譜面が1つも存在しなかった)場合のメッセージを取得する
                     subjectMessage = mainActivity.getString(R.string.pop_not_found);
                 }
             } catch (Exception e) {
+                // ログ出力
+                Log.e(TAG, "onClick->" + e.getClass().toString());
+
                 switch (Chooser.cause) {
                 case CONNECTION:
                     // 通信エラーメッセージをセット
@@ -95,21 +102,20 @@ class PoppingThread extends Thread {
                     break;
                 case OTHER:
                 default:
-                    // ログ出力
-                    Log.e(TAG, "onClick->" + e.getClass().toString());
-
                     // システムエラーメッセージをセット
                     subjectMessage = mainActivity.getString(R.string.error_system);
                     break;
                 }
             }
             final String finalSubjectMessage = subjectMessage;
+            final String share = (isShared) ? "share" : "none";
 
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // お題を表示させるダイアログを表示
-                    CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, finalSubjectMessage).show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                    CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, finalSubjectMessage, share)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
 
                     // 「お待ちください」のボタンを「今日のお題を出す」に変更する
                     mainActivity.buttonPop.setText(R.string.pop);
@@ -122,6 +128,10 @@ class PoppingThread extends Thread {
                     mainActivity.buttonCategory.setEnabled(true);
                     mainActivity.buttonOther.setEnabled(true);
                     mainActivity.buttonPop.setEnabled(true);
+
+                    // 取得日付を最終取得日のテキストビューに指定
+                    ((TextView) mainActivity.findViewById(R.id.textViewPop))
+                            .setText(mainActivity.getString(R.string.old_pop, mainActivity.sp.getString("oldPop", "----/--/--")));
                 }
             });
         }

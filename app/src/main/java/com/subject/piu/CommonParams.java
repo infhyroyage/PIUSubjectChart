@@ -65,7 +65,7 @@ public abstract class CommonParams {
             {"http://seesaawiki.jp/piujpn/d/FIESTA", "http://seesaawiki.jp/piujpn/d/FIESTA%20EX"},
             {"http://seesaawiki.jp/piujpn/d/FIESTA2"},
             {"http://seesaawiki.jp/piujpn/d/PRIME"},
-            {"http://seesaawiki.jp/piujpn/d/PRIME2"},
+            {"http://seesaawiki.jp/piujpn/d/PRIME2", "http://seesaawiki.jp/piujpn/d/PRIME2%282018%29"},
     };
     /**
      * 「シリーズ」のチェック状態

@@ -26,8 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         // MainActivityのインスタンス
         final MainActivity mainActivity = this;
+
         // MainActivityのSharedPreferenceインスタンスを取得
         sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        // 以前にお題を出した日付の文字列を取得し、テキストビューに指定
+        String oldPop = mainActivity.sp.getString("oldPop", "----/--/--");
+        ((TextView) findViewById(R.id.textViewPop)).setText(getString(R.string.old_pop, oldPop));
 
         // 「ステップ」のボタンにリスナーをセット
         buttonStep = findViewById(R.id.buttonStep);
