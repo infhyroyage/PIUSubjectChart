@@ -9,6 +9,7 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 class ConnectingAsyncTask extends AsyncTask<String, Void, Document> {
@@ -37,6 +38,12 @@ class ConnectingAsyncTask extends AsyncTask<String, Void, Document> {
 
             // オフラインのため通信できない
             Chooser.cause = GettingHTMLError.CONNECTION;
+        } catch (ConnectException e) {
+            // ログ出力
+            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+
+            // 途中で通信が遮断された
+            Chooser.cause = GettingHTMLError.INTERRUPT;
         } catch (HttpStatusException e) {
             // ログ出力
             Log.e(TAG, "doInBackGround->" + e.getClass().toString());

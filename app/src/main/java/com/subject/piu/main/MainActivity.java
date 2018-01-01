@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.subject.piu.CommonParams;
-import com.subject.R;
+import com.subject.piu.R;
 
 public class MainActivity extends AppCompatActivity {
     // メイン画面にある全ボタン

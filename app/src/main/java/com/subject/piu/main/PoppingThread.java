@@ -4,7 +4,7 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.subject.R;
+import com.subject.piu.R;
 import com.subject.piu.CommonParams;
 import com.subject.piu.chart.Chooser;
 
@@ -93,8 +93,12 @@ class PoppingThread extends Thread {
 
                 switch (Chooser.cause) {
                 case CONNECTION:
-                    // 通信エラーメッセージをセット
+                    // 通信不可能エラーメッセージをセット
                     subjectMessage = mainActivity.getString(R.string.error_connection);
+                    break;
+                case INTERRUPT:
+                    // 通信遮断メッセージをセット
+                    subjectMessage = mainActivity.getString(R.string.error_interrupt);
                     break;
                 case URL:
                     // URLエラーメッセージをセット

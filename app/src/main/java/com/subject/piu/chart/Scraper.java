@@ -240,6 +240,10 @@ abstract class Scraper {
 
             // 「曲名」を取得
             String name = tr.child(0).text().trim();
+            //  「曲名」が日本限定曲の場合はcontinueして取得しない
+            if (name.equals("Unlock") || name.equals("ヘビーローテーション")) {
+                continue;
+            }
 
             // 「ステップ」のチェック状態に応じて、「SINGLE」と「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
             if (CommonParams.stepChecks[0]) {

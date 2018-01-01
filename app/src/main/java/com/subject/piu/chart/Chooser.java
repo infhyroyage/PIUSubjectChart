@@ -3,7 +3,7 @@ package com.subject.piu.chart;
 import android.util.Log;
 import android.widget.ProgressBar;
 
-import com.subject.R;
+import com.subject.piu.R;
 import com.subject.piu.CommonParams;
 import com.subject.piu.GettingHTMLError;
 import com.subject.piu.main.MainActivity;

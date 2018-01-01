@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.subject.piu.CommonParams;
-import com.subject.R;
+import com.subject.piu.R;
 
 import java.util.Arrays;
 
