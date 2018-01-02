@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "622751265940",
+    "firebase_url": "https://piu-subject-chart.firebaseio.com",
+    "project_id": "piu-subject-chart",
+    "storage_bucket": "piu-subject-chart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622751265940:android:e55d50439a58fff6",
+        "android_client_info": {
+          "package_name": "com.subject.piu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "622751265940-j2bnalqk5v0ek217hvfmunbsscljtt0a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.subject.piu",
+            "certificate_hash": "ef4a0411e91c3c9f0f372c341982e6f69559eae3"
+          }
+        },
+        {
+          "client_id": "622751265940-tmquqh1tgod85vfck46d4vu0smnq8hpr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.subject.piu",
+            "certificate_hash": "469d11a3d4eff0dc3e676680e81e8f1e3f858c57"
+          }
+        },
+        {
+          "client_id": "622751265940-ufj462542ud1j3jn5cvf9o9e2jtp6f70.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKWo8HUcnc9pCDs8VsjhSsK7cna3kTX7g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "622751265940-ufj462542ud1j3jn5cvf9o9e2jtp6f70.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -106,6 +106,11 @@ public abstract class CommonParams {
     public static boolean amPassOnlyUsedStepCheck = false;
 
     /**
+     * メイン画面のAdMobのアプリID
+     */
+    public static final String MAIN_AD_VIEW_ID = "ca-app-pub-2231903967147229~6474652519";
+
+    /**
      * MainActivityからDialogFragmentを表示するのに用いるタグ
      */
     public static final String MAIN_ACTIVITY_DIALOG_FRAGMENT = "MainActivityDialogFragment";

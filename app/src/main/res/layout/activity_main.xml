@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/headerLayout"
+        android:id="@+id/mainHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -28,10 +29,11 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/mainScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buttonPop"
-        android:layout_below="@id/headerLayout">
+        android:layout_below="@id/mainHeaderLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -123,5 +125,14 @@
         android:layout_height="wrap_content"
         android:text="@string/pop"
         android:textSize="17sp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_above="@id/mainAdView"/>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/mainAdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/main_ad_view_id"/>
 </RelativeLayout>

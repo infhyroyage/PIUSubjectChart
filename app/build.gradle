@@ -24,9 +24,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.0.2'
-    compile 'org.jsoup:jsoup:1.7.3'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.7.3'
+
+    // Firebase Admob
+    implementation 'com.google.firebase:firebase-ads:11.8.0'
+    implementation 'com.android.support:support-v4:27.0.2'
 }
 
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.google.gms.google-services'
