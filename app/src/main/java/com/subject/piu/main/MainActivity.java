@@ -14,6 +14,10 @@ import com.google.android.gms.ads.MobileAds;
 import com.subject.piu.CommonParams;
 import com.subject.piu.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     // メイン画面にある全ボタン
     Button buttonStep, buttonDifficulty, buttonType, buttonSeries, buttonCategory, buttonOther, buttonPop;
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         // AdMobの初期化
         MobileAds.initialize(mainActivity, CommonParams.MAIN_AD_VIEW_ID);
-        AdView mainAdView = findViewById(R.id.mainAdView);
+        final AdView mainAdView = findViewById(R.id.mainAdView);
         AdRequest request = new AdRequest.Builder()
                 .build();
         mainAdView.loadAd(request);
@@ -115,7 +119,26 @@ public class MainActivity extends AppCompatActivity {
         buttonPop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new PoppingThread(mainActivity).start();
+                // 現在の日付と、以前にお題を出した日付の文字列を取得
+                String nowPop = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
+                String oldPop = sp.getString("oldPop", "----/--/--");
+
+                /*
+                 * 同日に2回以上「今日のお題を出す」のボタンを押したかどうか判断し、
+                 * 押した場合は既に出したお題の文字列を取得してダイアログを出力する
+                 * 押していない場合は、別スレッドでお題を出す
+                 */
+                if (nowPop.equals(oldPop)) {
+                    String subject = sp.getString("subject", "");
+                    if (subject.equals("")) {
+                        throw new IllegalStateException("Subject chart has already popped, but cannot be gotten.");
+                    }
+
+                    CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, mainActivity.getString(R.string.pop_result, subject), "share")
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else {
+                    new PoppingAsyncTask(mainActivity).execute();
+                }
             }
         });
     }

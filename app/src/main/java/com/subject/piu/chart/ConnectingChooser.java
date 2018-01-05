@@ -5,9 +5,9 @@ import android.widget.ProgressBar;
 
 import com.subject.piu.R;
 import com.subject.piu.CommonParams;
-import com.subject.piu.GettingHTMLError;
 import com.subject.piu.main.MainActivity;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
@@ -16,27 +16,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
 
-public abstract class Chooser {
+public abstract class ConnectingChooser {
     // デバッグ用のタグ
-    private static final String TAG = "Chooser";
+    private static final String TAG = "ConnectingChooser";
 
-    /**
-     * ConnectingAsyncTask.doInBackgroundメソッドでエラーが発生した原因
-     * choiceメソッドでIOExceptionがスローされた場合に値が格納される
-     */
-    public static GettingHTMLError cause;
+    // スマートフォン用WebページをPC用として取得するユーザエージェントの指定
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     /**
      * 今日のお題を出す
      * @param mainActivity メインアクティビティのインスタンス
      * @return 今日のお題の譜面を表した文字列、1日中に2回以上お題を出した場合はnull
-     * @throws InterruptedException スレッドの割込みが発生した場合
-     * @throws ExecutionException ConnectingAsyncTask.doInBackgroundメソッドで例外がスローされた場合
-     * @throws IOException ConnectingAsyncTask.doInBackgroundメソッドでエラーが発生した場合
+     * @throws IOException 通信時にエラーが発生した場合
      */
-    public static String execute(MainActivity mainActivity) throws InterruptedException, ExecutionException, IOException {
+    public static String execute(MainActivity mainActivity) throws IOException {
         // スクレイピングを行った譜面リストを生成
         List<UnitChart> chartList = new CopyOnWriteArrayList<>();
 
@@ -59,11 +53,7 @@ public abstract class Chooser {
             Log.d(TAG, "execute:start->connect,url=" + url);
 
             // あるシリーズのURLから、そのシリーズのHTMLドキュメントを取得
-            Document doc = new ConnectingAsyncTask().execute(url).get();
-            if (doc == null) throw new IOException();
-            // TODO : あとで消す
-            //Thread.sleep(500);
-            //chartList.add(new UnitChart(String.valueOf(i)));
+            Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
 
             // ログ出力
             Log.d(TAG, "execute:connect->scrape,url=" + url);
@@ -96,5 +86,5 @@ public abstract class Chooser {
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする
-    private Chooser() {}
+    private ConnectingChooser() {}
 }
