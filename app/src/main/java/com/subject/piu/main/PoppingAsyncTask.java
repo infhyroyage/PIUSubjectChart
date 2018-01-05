@@ -7,10 +7,11 @@ import android.widget.TextView;
 
 import com.subject.piu.R;
 import com.subject.piu.CommonParams;
-import com.subject.piu.chart.ConnectingChooser;
+import com.subject.piu.chart.ChartChooser;
 
 import org.jsoup.HttpStatusException;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -70,7 +71,7 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
 
         // お題の譜面の文字列を取得する
         try {
-            String subject = ConnectingChooser.execute(mainActivity);
+            String subject = ChartChooser.execute(mainActivity);
             if (subject != null) {
                 message = mainActivity.getString(R.string.pop_result, subject);
                 isShared = true;
@@ -86,28 +87,28 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
             }
         } catch (UnknownHostException e) {
             // ログ出力
-            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+            Log.e(TAG, "doInBackGround:UnknownHostException");
 
             // オフラインのため通信できない旨のメッセージをセット
             message = mainActivity.getString(R.string.error_connection);
         } catch (ConnectException e) {
             // ログ出力
-            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+            Log.e(TAG, "doInBackGround:ConnectException");
 
             // 途中で通信が遮断された旨のメッセージをセット
             message = mainActivity.getString(R.string.error_interrupt);
         } catch (HttpStatusException e) {
             // ログ出力
-            Log.e(TAG, "doInBackGround->" + e.getClass().toString());
+            Log.e(TAG, "doInBackGround:HttpStatusException");
 
             // URLが誤っているため通信できない旨のメッセージをセット
             message = mainActivity.getString(R.string.error_url);
-        } catch (Exception e) {
+        } catch (IOException e) {
             // ログ出力
-            Log.e(TAG, "onClick->" + e.getClass().toString());
+            Log.e(TAG, "doInBackGround:IOException");
 
-            // システムエラーメッセージをセット
-            message = mainActivity.getString(R.string.error_system);
+            // システムエラーなので、非チェック例外を再スロー
+            throw new IllegalStateException("doInBackGround:IOException,msg=" + e.getMessage());
         }
 
         return new PoppingResult(message, isShared);

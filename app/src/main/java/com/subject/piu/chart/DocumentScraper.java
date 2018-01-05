@@ -11,9 +11,9 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class Scraper {
+abstract class DocumentScraper {
     // デバッグ用のタグ
-    private static final String TAG = "Scraper";
+    private static final String TAG = "DocumentScraper";
 
     /**
      * 指定されたシリーズのHTMLドキュメントから、h3タグをスクレイピングする
@@ -436,5 +436,5 @@ abstract class Scraper {
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする
-    private Scraper() {}
+    private DocumentScraper() {}
 }
