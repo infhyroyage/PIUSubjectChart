@@ -1,6 +1,8 @@
-package com.subject.piu.main;
+package com.subject.piu.popping;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import com.subject.piu.R;
 import com.subject.piu.CommonParams;
 import com.subject.piu.chart.ChartChooser;
+import com.subject.piu.main.MainActivity;
 
 import org.jsoup.HttpStatusException;
 
@@ -23,14 +26,14 @@ import java.util.Locale;
 /**
  * バックグラウンド動作でお題を出す動作を実行する非同期処理クラス
  */
-class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingResult> {
+public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingResult> {
     // デバッグ用のタグ
     private static final String TAG = "PoppingAsyncTask";
 
     // AsyncTask内のContextの弱参照性を考慮したMainActivityのインスタンス
     private WeakReference<MainActivity> weakReference;
 
-    PoppingAsyncTask(MainActivity mainActivity) {
+    public PoppingAsyncTask(MainActivity mainActivity) {
         this.weakReference = new WeakReference<>(mainActivity);
     }
 
@@ -65,6 +68,8 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
     protected PoppingAsyncTask.PoppingResult doInBackground(Void... args) {
         // MainActivityを取得
         MainActivity mainActivity = weakReference.get();
+        // MainActivityのSharedPreferenceインスタンスを取得
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 
         // お題の譜面の文字列
         String message;
@@ -79,7 +84,7 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
                 isShared = true;
 
                 // 取得日付と、取得したお題の譜面の文字列を保存する
-                mainActivity.sp.edit()
+                sp.edit()
                         .putString("subject", subject)
                         .putString("oldPop", new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime()))
                         .apply();
@@ -124,6 +129,8 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
     protected void onPostExecute(PoppingAsyncTask.PoppingResult result) {
         // MainActivityを取得
         MainActivity mainActivity = weakReference.get();
+        // MainActivityのSharedPreferenceインスタンスを取得
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 
         // お題を表示させるダイアログを表示
         ResultDialogFragment.newInstance(mainActivity, result.message, result.isShared)
@@ -141,7 +148,7 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
 
         // 取得日付を最終取得日のテキストビューに指定
         ((TextView) mainActivity.findViewById(R.id.textViewPop))
-                .setText(mainActivity.getString(R.string.old_pop, mainActivity.sp.getString("oldPop", "----/--/--")));
+                .setText(mainActivity.getString(R.string.old_pop, sp.getString("oldPop", "----/--/--")));
     }
 
     /**

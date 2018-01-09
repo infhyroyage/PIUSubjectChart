@@ -1,4 +1,4 @@
-package com.subject.piu.main;
+package com.subject.piu.popping;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.subject.piu.R;
+import com.subject.piu.main.MainActivity;
 
 /**
  * お題を出した後の結果を表示するダイアログのクラス
@@ -30,7 +31,7 @@ public class ResultDialogFragment extends AppCompatDialogFragment {
      * @param isShared このダイアログに「共有」ボタンを表示させるかどうかのフラグ
      * @return このクラスのインスタンス
      */
-    static ResultDialogFragment newInstance(MainActivity mainActivity, String message, boolean isShared) {
+    public static ResultDialogFragment newInstance(MainActivity mainActivity, String message, boolean isShared) {
         ResultDialogFragment thisFragment = new ResultDialogFragment();
         thisFragment.mainActivity = mainActivity;
         thisFragment.message = message;

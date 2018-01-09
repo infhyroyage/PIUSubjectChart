@@ -16,6 +16,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.subject.piu.CommonParams;
 import com.subject.piu.R;
+import com.subject.piu.popping.PoppingAsyncTask;
+import com.subject.piu.popping.ResultDialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,11 +46,6 @@ public class MainActivity extends AppCompatActivity {
     public Button buttonPop;
 
     /**
-     * MainActivityのSharedPreferenceインスタンス
-     */
-    public SharedPreferences sp;
-
-    /**
      * アクティビティを生成する
      * @param bundle バンドルインスタンス
      */
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // MainActivityのSharedPreferenceインスタンスを取得
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 以前にお題を出した日付の文字列を取得し、テキストビューに指定
         String oldPop = sp.getString("oldPop", "----/--/--");
