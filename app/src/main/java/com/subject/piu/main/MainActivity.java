@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * すべてのフラグメント上で破棄されていないSwitchの集合
      */
-    public Set<Switch> switches = new CopyOnWriteArraySet<>();
+    public Set<Switch> createdSwitches = new CopyOnWriteArraySet<>();
 
     /**
      * 「今日のお題を出す」ボタンが「お待ちください…」へと変化したかどうかのフラグ
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 「今日のお題を出す」のボタンのインスタンス
      */
-    public Button buttonPop;
+    public Button mainButtonPop;
 
     /**
      * アクティビティを生成する
@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 「今日のお題を出す」のボタンにリスナーをセット
         final MainActivity mainActivity = this;
-        buttonPop = findViewById(R.id.buttonPop);
-        buttonPop.setOnClickListener(new View.OnClickListener() {
+        mainButtonPop = findViewById(R.id.mainButtonPop);
+        mainButtonPop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 現在の日付と、以前にお題を出した日付の文字列を取得

@@ -1,6 +1,8 @@
 package com.subject.piu.main;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -60,6 +62,9 @@ public class MainSwitchFragment extends Fragment {
         // ログ出力
         Log.d(TAG, "onCreateView:position=" + position);
 
+        // MainActivityのSharedPreferenceインスタンスを取得
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+
         // 1dpの大きさをpx単位で計算
         float dp = mainActivity.getResources().getDisplayMetrics().density;
 
@@ -84,7 +89,12 @@ public class MainSwitchFragment extends Fragment {
                 s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // チェック状態を更新
                         CommonParams.stepChecks[idx] = isChecked;
+                        // チェック状態をSharedPreferenceに保存
+                        sp.edit()
+                                .putBoolean("stepChecks[" + idx + "]", isChecked)
+                                .apply();
                     }
                 });
 
@@ -106,7 +116,12 @@ public class MainSwitchFragment extends Fragment {
                 s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // チェック状態を更新
                         CommonParams.difficultyChecks[idx] = isChecked;
+                        // チェック状態をSharedPreferenceに保存
+                        sp.edit()
+                                .putBoolean("difficultyChecks[" + idx + "]", isChecked)
+                                .apply();
                     }
                 });
 
@@ -128,7 +143,12 @@ public class MainSwitchFragment extends Fragment {
                 s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // チェック状態を更新
                         CommonParams.typeChecks[idx] = isChecked;
+                        // チェック状態をSharedPreferenceに保存
+                        sp.edit()
+                                .putBoolean("typeChecks[" + idx + "]", isChecked)
+                                .apply();
                     }
                 });
 
@@ -150,7 +170,12 @@ public class MainSwitchFragment extends Fragment {
                 s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // チェック状態を更新
                         CommonParams.seriesChecks[idx] = isChecked;
+                        // チェック状態をSharedPreferenceに保存
+                        sp.edit()
+                                .putBoolean("seriesChecks[" + idx + "]", isChecked)
+                                .apply();
                     }
                 });
 
@@ -172,7 +197,12 @@ public class MainSwitchFragment extends Fragment {
                 s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // チェック状態を更新
                         CommonParams.categoryChecks[idx] = isChecked;
+                        // チェック状態をSharedPreferenceに保存
+                        sp.edit()
+                                .putBoolean("categoryChecks[" + idx + "]", isChecked)
+                                .apply();
                     }
                 });
 
@@ -191,7 +221,12 @@ public class MainSwitchFragment extends Fragment {
             ppUnlockedStepSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // チェック状態を更新
                     CommonParams.ppUnlockedStepCheck = isChecked;
+                    // チェック状態をSharedPreferenceに保存
+                    sp.edit()
+                            .putBoolean("ppUnlockedStepCheck", isChecked)
+                            .apply();
                 }
             });
 
@@ -203,7 +238,12 @@ public class MainSwitchFragment extends Fragment {
             amPassOnlyUsedStepSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // チェック状態を更新
                     CommonParams.amPassOnlyUsedStepCheck = isChecked;
+                    // チェック状態をSharedPreferenceに保存
+                    sp.edit()
+                            .putBoolean("amPassOnlyUsedStepCheck", isChecked)
+                            .apply();
                 }
             });
 
@@ -219,7 +259,7 @@ public class MainSwitchFragment extends Fragment {
         }
 
         // レイアウトに格納したすべてのSwitchを、その集合にセット
-        mainActivity.switches.addAll(switches);
+        mainActivity.createdSwitches.addAll(switches);
 
         return thisView;
     }
@@ -233,7 +273,7 @@ public class MainSwitchFragment extends Fragment {
         Log.d(TAG, "onDestroyView:position=" + position);
 
         // このフラグメント上で破棄されるSwitchを、その集合から除去する
-        mainActivity.switches.removeAll(switches);
+        mainActivity.createdSwitches.removeAll(switches);
         switches.clear();
         
         super.onDestroyView();

@@ -46,13 +46,13 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
         MainActivity mainActivity = weakReference.get();
 
         // 「お待ちください」のボタンと、破棄されていないSwitchをすべて無効にして押せなくする
-        mainActivity.buttonPop.setEnabled(false);
-        for (Switch s : mainActivity.switches) {
+        mainActivity.mainButtonPop.setEnabled(false);
+        for (Switch s : mainActivity.createdSwitches) {
             s.setEnabled(false);
         }
 
         // 「今日のお題を出す」のボタンを「お待ちください…」に変更し、そのフラグも変更する
-        mainActivity.buttonPop.setText(R.string.getting_charts);
+        mainActivity.mainButtonPop.setText(R.string.getting_charts);
         mainActivity.isWaited.set(true);
 
         // プログレスバーを初期化
@@ -138,13 +138,13 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
 
         // 「お待ちください」のボタンを「今日のお題を出す」に変更し、そのフラグも変更する
         mainActivity.isWaited.set(false);
-        mainActivity.buttonPop.setText(R.string.pop);
+        mainActivity.mainButtonPop.setText(R.string.pop);
 
         // 「お待ちください」のボタンと、破棄されていないSwitchをすべて有効にして押せるようにする
-        for (Switch s : mainActivity.switches) {
+        for (Switch s : mainActivity.createdSwitches) {
             s.setEnabled(true);
         }
-        mainActivity.buttonPop.setEnabled(true);
+        mainActivity.mainButtonPop.setEnabled(true);
 
         // 取得日付を最終取得日のテキストビューに指定
         ((TextView) mainActivity.findViewById(R.id.textViewPop))
