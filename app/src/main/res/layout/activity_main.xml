@@ -2,15 +2,23 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mainTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:tabMode="scrollable"/>
 
     <LinearLayout
         android:id="@+id/mainHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/mainTabLayout">
 
         <TextView
             android:id="@+id/textViewPop"
@@ -28,96 +36,12 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/mainScrollView"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/buttonPop"
-        android:layout_below="@id/mainHeaderLayout">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/buttonStep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/step"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/textViewStep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/current"/>
-
-            <Button
-                android:id="@+id/buttonDifficulty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/difficulty"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/textViewDifficulty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/current"/>
-
-            <Button
-                android:id="@+id/buttonType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/type"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/textViewType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/current"/>
-
-            <Button
-                android:id="@+id/buttonSeries"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/series"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/textViewSeries"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/current"/>
-
-            <Button
-                android:id="@+id/buttonCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/category"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/textViewCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/current"/>
-
-            <Button
-                android:id="@+id/buttonOther"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/other"
-                android:textSize="17sp"/>
-        </LinearLayout>
-    </ScrollView>
+        android:layout_below="@id/mainHeaderLayout"/>
 
     <Button
         android:id="@+id/buttonPop"

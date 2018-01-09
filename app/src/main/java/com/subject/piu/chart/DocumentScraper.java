@@ -11,6 +11,9 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Jsoupで取得したHTMLドキュメントから、タグごとにスクレイピングを行い、譜面データを取得する動作を行う抽象staticクラス
+ */
 abstract class DocumentScraper {
     // デバッグ用のタグ
     private static final String TAG = "DocumentScraper";

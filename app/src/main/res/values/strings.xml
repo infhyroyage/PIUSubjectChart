@@ -2,7 +2,6 @@
     <string name="app_name">PIU 今日のお題メーカー</string>
     <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
-    <string name="current">現在の状態 : %1$s</string>
     <string name="difficulty">難易度</string>
     <string name="error_all_off">すべてOFFに指定できないため、直前の設定を取り消しました</string>
     <string name="error_connection">通信できません。\n通信設定を確かめてください。</string>

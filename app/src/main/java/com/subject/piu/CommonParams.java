@@ -1,6 +1,20 @@
 package com.subject.piu;
 
+/**
+ * 全パッケージの共通パラメータを定義する抽象staticクラス
+ */
 public abstract class CommonParams {
+    /**
+     * 以下で定義される、メイン画面のタブの数
+     *  ・ステップ
+     *  ・難易度
+     *  ・種別
+     *  ・シリーズ
+     *  ・カテゴリー
+     *  ・その他
+     */
+    public static final int TAB_PAGE_NUM = 6;
+
     /**
      * 「ステップ」の種類
      */
@@ -56,6 +70,7 @@ public abstract class CommonParams {
     };
     /**
      * 「シリーズ」のPUMP IT UP (JAPAN) WikiのURLの文字列
+     * 第1インデックスは、SERIESのインデックスと一致するように定義すること
      */
     public static final String[][] SERIES_URL = {
             {"http://seesaawiki.jp/piujpn/d/1st%a1%c1PERFECT%20COLLECTION"},
@@ -88,20 +103,20 @@ public abstract class CommonParams {
     public static boolean[] categoryChecks = new boolean[CATEGORIES.length];
 
     /**
-     * PP解禁譜面の種類
+     * 「その他」のPP解禁譜面の種類
      */
     public static final String PP_UNLOCKED_STEP = "PP解禁譜面を含む";
     /**
-     * PP解禁譜面のチェック状態
+     * 「その他」のPP解禁譜面のチェック状態
      */
     public static boolean ppUnlockedStepCheck = false;
 
     /**
-     * AM.PASS使用時限定譜面の種類
+     * 「その他」のAM.PASS使用時限定譜面の種類
      */
     public static final String AM_PASS_ONLY_USED_STEP = "AM.PASS使用時限定譜面を含む";
     /**
-     * AM.PASS使用時限定譜面のチェック状態
+     * 「その他」のAM.PASS使用時限定譜面のチェック状態
      */
     public static boolean amPassOnlyUsedStepCheck = false;
 

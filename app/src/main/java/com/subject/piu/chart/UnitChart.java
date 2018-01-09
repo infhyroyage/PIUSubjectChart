@@ -2,6 +2,9 @@ package com.subject.piu.chart;
 
 import android.util.Log;
 
+/**
+ * 1つの譜面データを表すクラス
+ */
 class UnitChart {
     // デバッグ用のタグ
     private static final String TAG = "UnitChart";
@@ -51,6 +54,10 @@ class UnitChart {
         Log.d(TAG, "name=" + name + ",CO-OP");
     }
 
+    /**
+     * この譜面のString形式の文字列を返す
+     * @return String形式の文字列
+     */
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();

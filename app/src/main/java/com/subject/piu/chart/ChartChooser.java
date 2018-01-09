@@ -20,6 +20,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * お題の譜面を1つ選択する動作を行う抽象staticクラス
+ */
 public abstract class ChartChooser {
     // デバッグ用のタグ
     private static final String TAG = "ChartChooser";
@@ -28,9 +31,9 @@ public abstract class ChartChooser {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     /**
-     * 今日のお題を出す
+     * お題の譜面を1つ選択し、その文字列を取得する
      * @param mainActivity メインアクティビティのインスタンス
-     * @return 今日のお題の譜面を表した文字列、該当する譜面が存在しない場合はnull
+     * @return お題の譜面を表した文字列、該当する譜面が存在しない場合はnull
      * @throws IOException 通信時にエラーが発生した場合
      */
     public static String execute(final MainActivity mainActivity) throws IOException {

@@ -6,8 +6,8 @@ android {
         applicationId "com.subject.piu"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20180101
-        versionName "20180101"
+        versionCode 20180109
+        versionName "20180109"
     }
     buildTypes {
         release {
@@ -23,14 +23,19 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // AppCompat
     implementation 'com.android.support:appcompat-v7:27.0.2'
 
-    // Jsoup
-    implementation 'org.jsoup:jsoup:1.7.3'
+    // TabLayout
+    implementation 'com.android.support:design:27.0.2'
 
     // Firebase Admob
     implementation 'com.google.firebase:firebase-ads:11.8.0'
     implementation 'com.android.support:support-v4:27.0.2'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.7.3'
 }
 
 repositories {

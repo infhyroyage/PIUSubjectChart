@@ -3,6 +3,7 @@ package com.subject.piu.main;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.subject.piu.R;
@@ -19,6 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * バックグラウンド動作でお題を出す動作を実行する非同期処理クラス
+ */
 class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingResult> {
     // デバッグ用のタグ
     private static final String TAG = "PoppingAsyncTask";
@@ -38,20 +42,18 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
         // MainActivityを取得
         MainActivity mainActivity = weakReference.get();
 
+        // 「お待ちください」のボタンと、破棄されていないSwitchをすべて無効にして押せなくする
+        mainActivity.buttonPop.setEnabled(false);
+        for (Switch s : mainActivity.switches) {
+            s.setEnabled(false);
+        }
+
+        // 「今日のお題を出す」のボタンを「お待ちください…」に変更し、そのフラグも変更する
+        mainActivity.buttonPop.setText(R.string.getting_charts);
+        mainActivity.isWaited.set(true);
+
         // プログレスバーを初期化
         ((ProgressBar) mainActivity.findViewById(R.id.progressBarPop)).setProgress(0);
-
-        // すべてのボタンをグレーアウトして押せなくする
-        mainActivity.buttonStep.setEnabled(false);
-        mainActivity.buttonDifficulty.setEnabled(false);
-        mainActivity.buttonType.setEnabled(false);
-        mainActivity.buttonSeries.setEnabled(false);
-        mainActivity.buttonCategory.setEnabled(false);
-        mainActivity.buttonOther.setEnabled(false);
-        mainActivity.buttonPop.setEnabled(false);
-
-        // 「今日のお題を出す」のボタンを「お待ちください…」に変更する
-        mainActivity.buttonPop.setText(R.string.getting_charts);
     }
 
     /**
@@ -123,23 +125,18 @@ class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.PoppingRes
         // MainActivityを取得
         MainActivity mainActivity = weakReference.get();
 
-        // 「共有」ボタンを表示する場合は"share"、しない場合は"none"にセット
-        String share = (result.isShared) ? "share" : "none";
-
         // お題を表示させるダイアログを表示
-        CheckDialogFragment.newInstance(mainActivity, ButtonKind.POP, result.message, share)
+        ResultDialogFragment.newInstance(mainActivity, result.message, result.isShared)
                 .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
 
-        // 「お待ちください」のボタンを「今日のお題を出す」に変更する
+        // 「お待ちください」のボタンを「今日のお題を出す」に変更し、そのフラグも変更する
+        mainActivity.isWaited.set(false);
         mainActivity.buttonPop.setText(R.string.pop);
 
-        // すべてのボタンをグレーアウトを解除して押せるようにする
-        mainActivity.buttonStep.setEnabled(true);
-        mainActivity.buttonDifficulty.setEnabled(true);
-        mainActivity.buttonType.setEnabled(true);
-        mainActivity.buttonSeries.setEnabled(true);
-        mainActivity.buttonCategory.setEnabled(true);
-        mainActivity.buttonOther.setEnabled(true);
+        // 「お待ちください」のボタンと、破棄されていないSwitchをすべて有効にして押せるようにする
+        for (Switch s : mainActivity.switches) {
+            s.setEnabled(true);
+        }
         mainActivity.buttonPop.setEnabled(true);
 
         // 取得日付を最終取得日のテキストビューに指定
