@@ -106,12 +106,11 @@ public class MainActivity extends AppCompatActivity {
                 String nowPop = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
                 String oldPop = sp.getString("oldPop", "----/--/--");
 
-                /*
-                 * 同日に2回以上「今日のお題を出す」のボタンを押したかどうか判断し、
-                 * 押した場合は既に出したお題の文字列を取得してダイアログを出力する
-                 * 押していない場合は、別スレッドでお題を出す
-                 */
                 if (nowPop.equals(oldPop)) {
+                    /*
+                     * 同日に2回以上「今日のお題を出す」のボタンを押したかどうか判断し、
+                     * その場合は既に出したお題の文字列を取得してダイアログを出力する
+                     */
                     String subject = sp.getString("subject", "");
                     if (subject.equals("")) {
                         throw new IllegalStateException("Subject chart has already popped, but cannot be gotten.");
@@ -120,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.pop_result, subject), true)
                             .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
                 } else {
+                    /*
+                     * TODO : 「その他」のタブ以外のチェック状態がすべてOFFになっていないかチェックし、
+                     * TODO : その場合はお題を出せない旨のメッセージを出力する
+                     * 上記以外の場合は、別スレッドでお題を出す
+                     */
                     new PoppingAsyncTask(mainActivity).execute();
                 }
             }
