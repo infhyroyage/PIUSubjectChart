@@ -20,6 +20,7 @@ import com.subject.piu.popping.PoppingAsyncTask;
 import com.subject.piu.popping.ResultDialogFragment;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Set;
@@ -65,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
         /*
          * 以下のタブごとのチェック状態を初期化
-         *  ・ステップ
+         * TODO : ・ステップ(後で消して、難易度とドッキングする)
          *  ・難易度
-         *  ・タイプ
+         *  ・種別
          *  ・シリーズ
          *  ・カテゴリー
          *  ・その他
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (nowPop.equals(oldPop)) {
                     /*
-                     * 同日に2回以上「今日のお題を出す」のボタンを押したかどうか判断し、
+                     * 同日に2回以上「今日のお題を出す」のボタンを押した場合は、
                      * その場合は既に出したお題の文字列を取得してダイアログを出力する
                      */
                     String subject = sp.getString("subject", "");
@@ -118,12 +119,28 @@ public class MainActivity extends AppCompatActivity {
 
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.pop_result, subject), true)
                             .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else if (Arrays.equals(CommonParams.stepChecks, new boolean[CommonParams.stepChecks.length])) {
+                    // 「ステップ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.step)), false)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else if (Arrays.equals(CommonParams.difficultyChecks, new boolean[CommonParams.difficultyChecks.length])) {
+                    // 「難易度」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.difficulty)), false)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else if (Arrays.equals(CommonParams.typeChecks, new boolean[CommonParams.typeChecks.length])) {
+                    // 「種別」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.type)), false)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else if (Arrays.equals(CommonParams.seriesChecks, new boolean[CommonParams.seriesChecks.length])) {
+                    // 「シリーズ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.series)), false)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                } else if (Arrays.equals(CommonParams.categoryChecks, new boolean[CommonParams.categoryChecks.length])) {
+                    // 「カテゴリー」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.category)), false)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
                 } else {
-                    /*
-                     * TODO : 「その他」のタブ以外のチェック状態がすべてOFFになっていないかチェックし、
-                     * TODO : その場合はお題を出せない旨のメッセージを出力する
-                     * 上記以外の場合は、別スレッドでお題を出す
-                     */
+                    // 上記以外の場合は、別スレッドでお題を出す
                     new PoppingAsyncTask(mainActivity).execute();
                 }
             }

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">PIU 今日のお題メーカー</string>
+    <string name="app_name">ODAI IT UP</string>
     <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
     <string name="difficulty">難易度</string>
-    <string name="error_all_off">すべてOFFに指定できないため、直前の設定を取り消しました</string>
+    <string name="error_all_off">「%1$s」タブがすべてOFFに指定されています。\n設定状態を確かめてください。</string>
     <string name="error_connection">通信できません。\n通信設定を確かめてください。</string>
     <string name="error_interrupt">途中で通信が遮断されました。\n通信の良い環境で再実行してください。</string>
     <string name="error_url">存在しないURLをアクセスしました。\nアプリケーション開発者に連絡してください。</string>

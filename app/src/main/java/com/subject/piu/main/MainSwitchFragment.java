@@ -75,6 +75,7 @@ public class MainSwitchFragment extends Fragment {
         LinearLayout switchLayout = thisView.findViewById(R.id.switchLayout);
 
         // 各Switchをレイアウトに格納し、その集合にセット
+        // TODO : Switchごとの間に横の区切り線(太さ:1dp)を表すFrameLayoutを追加
         switch (position) {
         case 0:
             // このフラグメントが「ステップ」に対応する場合
