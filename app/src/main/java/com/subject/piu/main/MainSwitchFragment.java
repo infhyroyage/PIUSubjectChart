@@ -1,6 +1,7 @@
 package com.subject.piu.main;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TableRow;
@@ -75,12 +77,18 @@ public class MainSwitchFragment extends Fragment {
         LinearLayout switchLayout = thisView.findViewById(R.id.switchLayout);
 
         // 各Switchをレイアウトに格納し、その集合にセット
-        // TODO : Switchごとの間に横の区切り線(太さ:1dp)を表すFrameLayoutを追加
         switch (position) {
         case 0:
             // このフラグメントが「ステップ」に対応する場合
             for (int i = 0; i < CommonParams.stepChecks.length; i++) {
                 final int idx = i;
+
+                // 各Switchの間に区切り線を表すFrameLayoutを追加
+                if (i > 0) {
+                    FrameLayout border = new FrameLayout(mainActivity);
+                    border.setBackgroundColor(Color.rgb(128, 128, 128));
+                    switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+                }
 
                 Switch s = new Switch(mainActivity);
                 s.setText(CommonParams.STEPS[i]);
@@ -109,6 +117,13 @@ public class MainSwitchFragment extends Fragment {
             for (int i = 0; i < CommonParams.difficultyChecks.length; i++) {
                 final int idx = i;
 
+                // 各Switchの間に区切り線を表すFrameLayoutを追加
+                if (i > 0) {
+                    FrameLayout border = new FrameLayout(mainActivity);
+                    border.setBackgroundColor(Color.rgb(128, 128, 128));
+                    switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+                }
+
                 Switch s = new Switch(mainActivity);
                 s.setText(String.valueOf(i + 1));
                 s.setChecked(CommonParams.difficultyChecks[i]);
@@ -135,6 +150,13 @@ public class MainSwitchFragment extends Fragment {
             // このフラグメントが「種別」に対応する場合
             for (int i = 0; i < CommonParams.typeChecks.length; i++) {
                 final int idx = i;
+
+                // 各Switchの間に区切り線を表すFrameLayoutを追加
+                if (i > 0) {
+                    FrameLayout border = new FrameLayout(mainActivity);
+                    border.setBackgroundColor(Color.rgb(128, 128, 128));
+                    switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+                }
 
                 Switch s = new Switch(mainActivity);
                 s.setText(CommonParams.TYPES[i]);
@@ -163,6 +185,13 @@ public class MainSwitchFragment extends Fragment {
             for (int i = 0; i < CommonParams.seriesChecks.length; i++) {
                 final int idx = i;
 
+                // 各Switchの間に区切り線を表すFrameLayoutを追加
+                if (i > 0) {
+                    FrameLayout border = new FrameLayout(mainActivity);
+                    border.setBackgroundColor(Color.rgb(128, 128, 128));
+                    switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+                }
+
                 Switch s = new Switch(mainActivity);
                 s.setText(CommonParams.SERIES[i]);
                 s.setChecked(CommonParams.seriesChecks[i]);
@@ -189,6 +218,13 @@ public class MainSwitchFragment extends Fragment {
             // このフラグメントが「カテゴリー」に対応する場合
             for (int i = 0; i < CommonParams.categoryChecks.length; i++) {
                 final int idx = i;
+
+                // 各Switchの間に区切り線を表すFrameLayoutを追加
+                if (i > 0) {
+                    FrameLayout border = new FrameLayout(mainActivity);
+                    border.setBackgroundColor(Color.rgb(128, 128, 128));
+                    switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+                }
 
                 Switch s = new Switch(mainActivity);
                 s.setText(CommonParams.CATEGORIES[i]);
@@ -252,6 +288,12 @@ public class MainSwitchFragment extends Fragment {
             switches.add(amPassOnlyUsedStepSwitch);
 
             switchLayout.addView(ppUnlockedStepSwitch, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            // 各Switchの間に区切り線を表すFrameLayoutを追加
+            FrameLayout border = new FrameLayout(mainActivity);
+            border.setBackgroundColor(Color.rgb(128, 128, 128));
+            switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
+            
             switchLayout.addView(amPassOnlyUsedStepSwitch, new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
             break;
