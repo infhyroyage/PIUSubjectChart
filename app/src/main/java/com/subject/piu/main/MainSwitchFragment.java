@@ -147,7 +147,7 @@ public class MainSwitchFragment extends Fragment {
             border.setBackgroundColor(Color.rgb(128, 128, 128));
             switchLayout.addView(border, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) dp));
 
-            // CO-OP譜面のSwitchを追加
+            // COOP譜面のSwitchを追加
             s = new Switch(mainActivity);
             s.setText(R.string.difficulty_coop);
             s.setChecked(CommonParams.coopCheck);

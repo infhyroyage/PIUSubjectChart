@@ -33,9 +33,9 @@ abstract class DocumentScraper {
          *  ・REMIX
          *  ・FULL SONG
          *  ・SHORT CUT
-         *  ・PRIME2で復活・削除した曲
-         *  また、シリーズが「PRIME2でプレイ可能になったPRIME JE未収録曲」の場合は、h4タグをスクレイピングする
-         *  また、シリーズが「コメントをかく」の場合はこれ以上譜面を取得できないのでbreakする
+         *  また、「PRIME2で復活・削除した曲」の場合は、NORMALの譜面しか存在しないので、種別を「NORMAL」に書き換える
+         *  また、「PRIME2でプレイ可能になったPRIME JE未収録曲」の場合は、入れ子になったh4タグをスクレイピングする
+         *  また、「コメントをかく」の場合は、これ以上譜面を取得できないのでbreakする
          */
         for (Element h3 : doc.getElementsByTag("h3")) {
             String type = h3.text().trim();
@@ -43,16 +43,20 @@ abstract class DocumentScraper {
             // ログ出力
             Log.d(TAG, "execute:type=" + type);
 
-            if (type.equals("コメントをかく")) {
-                break;
-            } else if (type.equals("PRIME2でプレイ可能になったPRIME JE未収録曲")) {
+            if (type.equals("PRIME2で復活・削除した曲")) {
+                type = "NORMAL";
+            }
+
+            if (type.equals("PRIME2でプレイ可能になったPRIME JE未収録曲")) {
                 chartSubList.addAll(scrapeH4FromH3(h3));
                 continue;
-            } else if (isSkippedByType(type) && !type.equals("PRIME2で復活・削除した曲")) {
+            } else if (type.equals("コメントをかく")) {
+                break;
+            } else if (isSkippedByType(type)) {
                 continue;
             }
 
-            chartSubList.addAll(scrapeH3(h3));
+            chartSubList.addAll(scrapeH3(h3, type));
         }
 
         return chartSubList;
@@ -61,9 +65,10 @@ abstract class DocumentScraper {
     /**
      * 指定されたあるシリーズのHTMLドキュメントにある、h3タグをスクレイピングする
      * @param h3 あるシリーズのHTMLドキュメントにあるh3タグ
+     * @param type 上記h3タグに属する種別
      * @return 指定されたシリーズの譜面サブリスト
      */
-    private static List<UnitChart> scrapeH3(Element h3) {
+    private static List<UnitChart> scrapeH3(Element h3, String type) {
         // 指定されたシリーズのHTMLドキュメントに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
@@ -106,7 +111,7 @@ abstract class DocumentScraper {
 
                 // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
                 for (Element table : selectTablesFromNonSkippedCategory(divIdx, category)) {
-                    chartSubList.addAll(scrapeTdFromTable(table));
+                    chartSubList.addAll(scrapeTdFromTable(table, type));
                 }
             }
         }
@@ -164,7 +169,7 @@ abstract class DocumentScraper {
 
                 // 抽出したカテゴリーに含まれるtableタグをすべて取得し、譜面サブリストに追加
                 for (Element table : divIdx.select("table")) {
-                    chartSubList.addAll(scrapeTdFromTable(table));
+                    chartSubList.addAll(scrapeTdFromTable(table, type));
                 }
             }
         }
@@ -214,9 +219,10 @@ abstract class DocumentScraper {
     /**
      * 指定されたtableタグから、tdタグをスクレイピングする
      * @param table tableタグのインスタンス
+     * @param type 上記tableタグに属する種別
      * @return tableタグに含まれる譜面サブリスト
      */
-    private static List<UnitChart> scrapeTdFromTable(Element table) {
+    private static List<UnitChart> scrapeTdFromTable(Element table, String type) {
         // 指定されたtableタグに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
@@ -251,25 +257,25 @@ abstract class DocumentScraper {
             // 「SINGLE」を取得し、空文字でなければ譜面サブリストに追加
             Element tdSingle = tds.get(2);
             if (!tdSingle.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
+                chartSubList.addAll(scrapeChartFromTd(tdSingle, name, type, false, false));
             }
 
             // 「DOUBLE」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDouble = tds.get(3);
             if (!tdDouble.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdDouble, name, true, false));
+                chartSubList.addAll(scrapeChartFromTd(tdDouble, name, type, true, false));
             }
 
             // 「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
             Element tdSPerf = tds.get(4);
             if (!tdSPerf.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
+                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, type, false, true));
             }
 
             // 「D-PERF」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDPerf = tds.get(5);
             if (!tdDPerf.html().equals("")) {
-                chartSubList.addAll(scrapeChartFromTd(tdDPerf, name, true, true));
+                chartSubList.addAll(scrapeChartFromTd(tdDPerf, name, type, true, true));
             }
         }
 
@@ -279,12 +285,13 @@ abstract class DocumentScraper {
     /**
      * 指定されたtdタグから、tdタグに含まれる譜面情報をスクレイピングする
      * @param td tdタグのインスタンス
-     * @param name 曲名
+     * @param name tdタグに属する曲名
+     * @param type tdタグに属する種別
      * @param isDouble Single、Doubleのフラグ
      * @param isPerformance Performance譜面のフラグ
      * @return tdタグに含まれる譜面サブリスト
      */
-    private static List<UnitChart> scrapeChartFromTd(Element td, String name, boolean isDouble, boolean isPerformance) {
+    private static List<UnitChart> scrapeChartFromTd(Element td, String name, String type, boolean isDouble, boolean isPerformance) {
         // 指定されたtdタグに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
@@ -297,7 +304,7 @@ abstract class DocumentScraper {
         for (int i = 0; i < chartsStr.length(); i++) {
             if (chartsStr.charAt(i) == '/') {
                 if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
-                    // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+                    // 「難易度」のCOOP譜面のチェック状態に応じて譜面サブリストに追加
                     if (CommonParams.coopCheck) {
                         chartSubList.add(new UnitChart(name));
                     }
@@ -308,7 +315,7 @@ abstract class DocumentScraper {
 
                         // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
                         if (isChecked[difficulty - 1]) {
-                            chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                            chartSubList.add(new UnitChart(name, difficulty, type, isDouble, isPerformance));
                         }
                     } catch (Exception e) {
                         /*
@@ -327,7 +334,7 @@ abstract class DocumentScraper {
             }
         }
         if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
-            // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+            // 「難易度」のCOOP譜面のチェック状態に応じて譜面サブリストに追加
             if (CommonParams.coopCheck) {
                 chartSubList.add(new UnitChart(name));
             }
@@ -338,7 +345,7 @@ abstract class DocumentScraper {
 
                 // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
                 if (isChecked[difficulty - 1]) {
-                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                    chartSubList.add(new UnitChart(name, difficulty, type, isDouble, isPerformance));
                 }
             } catch (Exception e) {
                 /*
@@ -364,7 +371,7 @@ abstract class DocumentScraper {
             other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStepCheck;
             if (other) {
                 if (span.text().trim().contains("COOP") || span.text().trim().contains("CO-OP")) {
-                    // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+                    // 「難易度」のCOOP譜面のチェック状態に応じて譜面サブリストに追加
                     if (CommonParams.coopCheck) {
                         chartSubList.add(new UnitChart(name));
                     }
@@ -375,7 +382,7 @@ abstract class DocumentScraper {
 
                         // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
                         if (isChecked[difficulty - 1]) {
-                            chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
+                            chartSubList.add(new UnitChart(name, difficulty, type, isDouble, isPerformance));
                         }
                     } catch (Exception e) {
                         /*
@@ -394,7 +401,7 @@ abstract class DocumentScraper {
     }
 
     /**
-     * 「種別」のチェック状態と、指定されたh3/h4タグのテキストにおける
+     * 「種別」のチェック状態と、指定されたh3/h4タグに属する種別における
      * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
      *  ・NORMAL
      *  ・REMIX
@@ -419,7 +426,7 @@ abstract class DocumentScraper {
     }
 
     /**
-     * 「カテゴリー」のチェック状態と、指定されたh4/h5タグのテキストにおける
+     * 「カテゴリー」のチェック状態と、指定されたh4/h5タグに属するカテゴリーにおける
      * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
      *  ・Original
      *  ・K-POP

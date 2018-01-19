@@ -31,7 +31,7 @@ public abstract class CommonParams {
      */
     public static boolean[] doubleChecks = new boolean[MAX_DOUBLE_DIFFICULTY];
     /**
-     * 「難易度」のCO-OP譜面のチェック状態
+     * 「難易度」のCOOP譜面のチェック状態
      */
     public static boolean coopCheck = false;
 

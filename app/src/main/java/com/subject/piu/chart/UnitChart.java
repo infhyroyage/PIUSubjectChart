@@ -2,6 +2,8 @@ package com.subject.piu.chart;
 
 import android.util.Log;
 
+import com.subject.piu.CommonParams;
+
 /**
  * 1つの譜面データを表すクラス
  */
@@ -12,46 +14,47 @@ class UnitChart {
     // 曲名
     private String name;
 
+    // 難易度
+    private int difficulty;
+
+    // 種別
+    private String type;
+
     // Single、Doubleのフラグ
     private boolean isDouble;
 
     // Performance譜面のフラグ
     private boolean isPerformance;
 
-    // 難易度
-    private int difficulty;
-
-    // CO-OP譜面の文字列
-    private String coopStr;
-
     /**
-     * CO-OP譜面以外のコンストラクタ
+     * COOP譜面以外のコンストラクタ
      * @param name 曲名
+     * @param difficulty 難易度
+     * @param type 種別
      * @param isDouble Single、Doubleのフラグ
      * @param isPerformance Performance譜面のフラグ
-     * @param difficulty 難易度
      */
-    UnitChart(String name, boolean isDouble, boolean isPerformance, int difficulty) {
+    UnitChart(String name, int difficulty, String type, boolean isDouble, boolean isPerformance) {
         this.name = name;
+        this.difficulty = difficulty;
+        this.type = type;
         this.isDouble = isDouble;
         this.isPerformance = isPerformance;
-        this.difficulty = difficulty;
-        this.coopStr = "";
 
         // ログ出力
-        Log.d(TAG, "name=" + name + ",isDouble=" + isDouble + ",isPerformance=" + isPerformance + ",difficulty=" + difficulty);
+        Log.d(TAG, "name=" + name + ",difficulty=" + difficulty + ",type=" + type + ",isDouble=" + isDouble + ",isPerformance=" + isPerformance);
     }
 
     /**
-     * CO-OP譜面のコンストラクタ
+     * COOP譜面のコンストラクタ
      * @param name 曲名
      */
     UnitChart(String name) {
         this.name = name;
-        this.coopStr = "CO-OP";
+        this.type = "COOP";
 
         // ログ出力
-        Log.d(TAG, "name=" + name + ",CO-OP");
+        Log.d(TAG, "name=" + name + ",type=COOP");
     }
 
     /**
@@ -61,14 +64,21 @@ class UnitChart {
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(name);
-        strBuilder.append(" ");
-        if (coopStr.equals("")) {
-            strBuilder.append((isDouble) ? "Double " : "Single ");
+        if (type.equals("COOP")) {
+            strBuilder.append("COOPの");
+            strBuilder.append(name);
+        } else {
+            if (type.equalsIgnoreCase(CommonParams.TYPES[1])) {
+                strBuilder.append("REMIXの");
+            } else if (type.equalsIgnoreCase(CommonParams.TYPES[2])) {
+                strBuilder.append("FULL SONGの");
+            } else if (type.equalsIgnoreCase(CommonParams.TYPES[3])) {
+                strBuilder.append("SHORT CUTの");
+            }
+            strBuilder.append(name);
+            strBuilder.append((isDouble) ? " Double " : " Single ");
             strBuilder.append((isPerformance) ? "Performance " : "");
             strBuilder.append(difficulty);
-        } else {
-            strBuilder.append(coopStr);
         }
 
         return strBuilder.toString();
