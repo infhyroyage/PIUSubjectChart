@@ -6,40 +6,34 @@ package com.subject.piu;
 public abstract class CommonParams {
     /**
      * 以下で定義される、メイン画面のタブの数
-     *  ・ステップ
      *  ・難易度
      *  ・種別
      *  ・シリーズ
      *  ・カテゴリー
      *  ・その他
      */
-    public static final int TAB_PAGE_NUM = 6;
+    public static final int TAB_PAGE_NUM = 5;
 
     /**
-     * 「ステップ」の種類
+     * 現行稼働のSingle譜面の最高難易度
      */
-    public static final String[] STEPS = {
-            "Single + Single Performance",
-            "Double + Double Performance",
-            "CO-OP"
-    };
+    private static final int MAX_SINGLE_DIFFICULTY = 26;
     /**
-     * 「ステップ」のチェック状態
+     * 「難易度」のSingle譜面のチェック状態
      */
-    public static boolean[] stepChecks = new boolean[STEPS.length];
-
+    public static boolean[] singleChecks = new boolean[MAX_SINGLE_DIFFICULTY];
     /**
-     * 現行稼働の最低難易度
+     * 現行稼働のDouble譜面の最高難易度
      */
-    private static final int MIN_DIFFICULTY = 1;
+    private static final int MAX_DOUBLE_DIFFICULTY = 28;
     /**
-     * 現行稼働の最高難易度
+     * 「難易度」のSingle譜面のチェック状態
      */
-    private static final int MAX_DIFFICULTY = 28;
+    public static boolean[] doubleChecks = new boolean[MAX_DOUBLE_DIFFICULTY];
     /**
-     * 「難易度」のチェック状態
+     * 「難易度」のCO-OP譜面のチェック状態
      */
-    public static boolean[] difficultyChecks = new boolean[MAX_DIFFICULTY - MIN_DIFFICULTY + 1];
+    public static boolean coopCheck = false;
 
     /**
      * 「種別」の種類

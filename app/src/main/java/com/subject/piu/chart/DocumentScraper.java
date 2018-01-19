@@ -248,23 +248,22 @@ abstract class DocumentScraper {
                 continue;
             }
 
-            // 「ステップ」のチェック状態に応じて、「SINGLE」と「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
-            if (CommonParams.stepChecks[0]) {
-                Element tdSingle = tds.get(2);
-                if (!tdSingle.html().equals("")) {
-                    chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
-                }
-
-                Element tdSPerf = tds.get(4);
-                if (!tdSPerf.html().equals("")) {
-                    chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
-                }
+            // 「SINGLE」を取得し、空文字でなければ譜面サブリストに追加
+            Element tdSingle = tds.get(2);
+            if (!tdSingle.html().equals("")) {
+                chartSubList.addAll(scrapeChartFromTd(tdSingle, name, false, false));
             }
 
             // 「DOUBLE」を取得し、空文字でなければ譜面サブリストに追加
             Element tdDouble = tds.get(3);
             if (!tdDouble.html().equals("")) {
                 chartSubList.addAll(scrapeChartFromTd(tdDouble, name, true, false));
+            }
+
+            // 「S-PERF」を取得し、空文字でなければ譜面サブリストに追加
+            Element tdSPerf = tds.get(4);
+            if (!tdSPerf.html().equals("")) {
+                chartSubList.addAll(scrapeChartFromTd(tdSPerf, name, false, true));
             }
 
             // 「D-PERF」を取得し、空文字でなければ譜面サブリストに追加
@@ -289,30 +288,36 @@ abstract class DocumentScraper {
         // 指定されたtdタグに含まれる譜面サブリストのインスタンス
         List<UnitChart> chartSubList = new ArrayList<>();
 
+        // Single、Double譜面のチェック状態をコピー
+        boolean[] isChecked = (isDouble) ? CommonParams.doubleChecks.clone() : CommonParams.singleChecks.clone();
+
         // tdタグ中の「その他」に該当しない譜面を表した文字列を取得
         String chartsStr = td.ownText();
         StringBuilder workStr = new StringBuilder();
         for (int i = 0; i < chartsStr.length(); i++) {
             if (chartsStr.charAt(i) == '/') {
                 if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
-                    // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-                    if (CommonParams.stepChecks[2]) {
+                    // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+                    if (CommonParams.coopCheck) {
                         chartSubList.add(new UnitChart(name));
                     }
                 } else {
-                    // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-                    if (isDouble && !CommonParams.stepChecks[1]) {
-                        continue;
-                    }
-
                     try {
+                        // 1つずつ譜面の難易度を取得
                         int difficulty = Integer.parseInt(workStr.toString().trim());
 
-                        if (CommonParams.difficultyChecks[difficulty - 1]) {
+                        // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
+                        if (isChecked[difficulty - 1]) {
                             chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                         }
                     } catch (Exception e) {
-                        // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                        /*
+                         * 以下の場合より例外を発生しても、何もしない
+                         *  ・"//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれているため、
+                         *    難易度取得時にNumberFormatExceptionがスローされた場合
+                         *  ・取得した難易度が上限難易度を超えているため、
+                         *    チェック状態取得時にArrayIndexOutOfBoundsExceptionがスローされた場合
+                         */
                     } finally {
                         workStr = new StringBuilder();
                     }
@@ -322,22 +327,27 @@ abstract class DocumentScraper {
             }
         }
         if (workStr.toString().trim().contains("COOP") || workStr.toString().contains("CO-OP")) {
-            // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-            if (CommonParams.stepChecks[2]) {
+            // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+            if (CommonParams.coopCheck) {
                 chartSubList.add(new UnitChart(name));
             }
         } else {
-            // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-            if (!isDouble || CommonParams.stepChecks[1]) {
-                try {
-                    int difficulty = Integer.parseInt(workStr.toString().trim());
+            try {
+                // 1つずつ譜面の難易度を取得
+                int difficulty = Integer.parseInt(workStr.toString().trim());
 
-                    if (CommonParams.difficultyChecks[difficulty - 1]) {
-                        chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
-                    }
-                } catch (Exception e) {
-                    // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
+                if (isChecked[difficulty - 1]) {
+                    chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                 }
+            } catch (Exception e) {
+                /*
+                 * 以下の場合より例外を発生しても、何もしない
+                 *  ・"//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれているため、
+                 *    難易度取得時にNumberFormatExceptionがスローされた場合
+                 *  ・取得した難易度が上限難易度を超えているため、
+                 *    チェック状態取得時にArrayIndexOutOfBoundsExceptionがスローされた場合
+                 */
             }
         }
 
@@ -354,23 +364,27 @@ abstract class DocumentScraper {
             other = other || span.attributes().get("style").contains("#009e25") && CommonParams.amPassOnlyUsedStepCheck;
             if (other) {
                 if (span.text().trim().contains("COOP") || span.text().trim().contains("CO-OP")) {
-                    // 「ステップ」のチェック状態に応じて、CO-OP譜面を譜面サブリストに入れる
-                    if (CommonParams.stepChecks[2]) {
+                    // 「難易度」のCO-OP譜面のチェック状態に応じて譜面サブリストに追加
+                    if (CommonParams.coopCheck) {
                         chartSubList.add(new UnitChart(name));
                     }
                 } else {
-                    // (Double譜面の場合は「ステップ」と)「難易度」のチェック状態に応じて、譜面サブリストに入れる
-                    if (isDouble && !CommonParams.stepChecks[1]) {
-                        continue;
-                    }
-
                     try {
+                        // 1つずつ譜面の難易度を取得
                         int difficulty = Integer.parseInt(span.text().trim());
-                        if (CommonParams.difficultyChecks[difficulty - 1]) {
+
+                        // 「難易度」のSingle、Double譜面のチェック状態に応じて譜面サブリストに追加
+                        if (isChecked[difficulty - 1]) {
                             chartSubList.add(new UnitChart(name, isDouble, isPerformance, difficulty));
                         }
                     } catch (Exception e) {
-                        // "//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれている場合は何もしない
+                        /*
+                         * 以下の場合より例外を発生しても、何もしない
+                         *  ・"//"や"/ /"など、数値に変換できない文字列がスラッシュに囲まれているため、
+                         *    難易度取得時にNumberFormatExceptionがスローされた場合
+                         *  ・取得した難易度が上限難易度を超えているため、
+                         *    チェック状態取得時にArrayIndexOutOfBoundsExceptionがスローされた場合
+                         */
                     }
                 }
             }

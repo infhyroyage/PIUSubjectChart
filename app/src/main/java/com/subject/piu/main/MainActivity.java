@@ -64,30 +64,27 @@ public class MainActivity extends AppCompatActivity {
         String oldPop = sp.getString("oldPop", "----/--/--");
         ((TextView) findViewById(R.id.textViewPop)).setText(getString(R.string.old_pop, oldPop));
 
-        /*
-         * 以下のタブごとのチェック状態を初期化
-         * TODO : ・ステップ(後で消して、難易度とドッキングする)
-         *  ・難易度
-         *  ・種別
-         *  ・シリーズ
-         *  ・カテゴリー
-         *  ・その他
-         */
-        for (int i = 0; i < CommonParams.stepChecks.length; i++) {
-            CommonParams.stepChecks[i] = sp.getBoolean("stepChecks[" + i + "]", true);
+        // 「難易度」タブのチェック状態を初期化
+        for (int i = 0; i < CommonParams.singleChecks.length; i++) {
+            CommonParams.singleChecks[i] = sp.getBoolean("singleChecks[" + i + "]", true);
         }
-        for (int i = 0; i < CommonParams.difficultyChecks.length; i++) {
-            CommonParams.difficultyChecks[i] = sp.getBoolean("difficultyChecks[" + i + "]", true);
+        for (int i = 0; i < CommonParams.doubleChecks.length; i++) {
+            CommonParams.doubleChecks[i] = sp.getBoolean("doubleChecks[" + i + "]", true);
         }
+        CommonParams.coopCheck = sp.getBoolean("coopCheck", true);
+        // 「種別」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.typeChecks.length; i++) {
             CommonParams.typeChecks[i] = sp.getBoolean("typeChecks[" + i + "]", true);
         }
+        // 「シリーズ」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.seriesChecks.length; i++) {
             CommonParams.seriesChecks[i] = sp.getBoolean("seriesChecks[" + i + "]", true);
         }
+        // 「カテゴリー」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.categoryChecks.length; i++) {
             CommonParams.categoryChecks[i] = sp.getBoolean("categoryChecks[" + i + "]", true);
         }
+        // 「その他」タブのチェック状態を初期化
         CommonParams.ppUnlockedStepCheck = sp.getBoolean("ppUnlockedStepCheck", false);
         CommonParams.amPassOnlyUsedStepCheck = sp.getBoolean("amPassOnlyUsedStepCheck", false);
 
@@ -119,11 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.pop_result, subject), true)
                             .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
-                } else if (Arrays.equals(CommonParams.stepChecks, new boolean[CommonParams.stepChecks.length])) {
-                    // 「ステップ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.step)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
-                } else if (Arrays.equals(CommonParams.difficultyChecks, new boolean[CommonParams.difficultyChecks.length])) {
+                } else if (Arrays.equals(CommonParams.singleChecks, new boolean[CommonParams.singleChecks.length]) && Arrays.equals(CommonParams.doubleChecks, new boolean[CommonParams.doubleChecks.length]) && !CommonParams.coopCheck) {
                     // 「難易度」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.difficulty)), false)
                             .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);

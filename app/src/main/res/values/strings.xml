@@ -3,6 +3,9 @@
     <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
     <string name="difficulty">難易度</string>
+    <string name="difficulty_coop">CO-OP</string>
+    <string name="difficulty_double">Double %1$d</string>
+    <string name="difficulty_single">Single %1$d</string>
     <string name="error_all_off">「%1$s」タブがすべてOFFに指定されています。\n設定状態を確かめてください。</string>
     <string name="error_connection">通信できません。\n通信設定を確かめてください。</string>
     <string name="error_interrupt">途中で通信が遮断されました。\n通信の良い環境で再実行してください。</string>

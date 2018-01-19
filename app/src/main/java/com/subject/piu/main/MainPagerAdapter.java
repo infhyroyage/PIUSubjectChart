@@ -50,25 +50,22 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
         case 0:
-            // 「ステップ」の場合
-            return mainActivity.getString(R.string.step);
-        case 1:
             // 「難易度」の場合
             return mainActivity.getString(R.string.difficulty);
-        case 2:
+        case 1:
             // 「種別」の場合
             return mainActivity.getString(R.string.type);
-        case 3:
+        case 2:
             // 「シリーズ」の場合
             return mainActivity.getString(R.string.series);
-        case 4:
+        case 3:
             // 「カテゴリー」の場合
             return mainActivity.getString(R.string.category);
-        case 5:
+        case 4:
             // 「その他」の場合
             return mainActivity.getString(R.string.other);
         default:
-            throw new IllegalArgumentException("position is out between 0 to 5.");
+            throw new IllegalArgumentException("position is out between 0 to 4.");
         }
     }
 
