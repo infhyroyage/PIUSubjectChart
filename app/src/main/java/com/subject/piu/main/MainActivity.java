@@ -6,10 +6,14 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -57,12 +61,16 @@ public class MainActivity extends AppCompatActivity {
         // メイン画面のレイアウトをビューにセット
         setContentView(R.layout.activity_main);
 
+        // ToolBarを取得し、ActionBarとしてセット
+        Toolbar mainToolBar = findViewById(R.id.mainToolBar);
+        setSupportActionBar(mainToolBar);
+
         // MainActivityのSharedPreferenceインスタンスを取得
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 以前にお題を出した日付の文字列を取得し、テキストビューに指定
         String oldPop = sp.getString("oldPop", "----/--/--");
-        ((TextView) findViewById(R.id.textViewPop)).setText(getString(R.string.old_pop, oldPop));
+        ((TextView) findViewById(R.id.textViewPop)).setText(getString(R.string.last_taking_date, oldPop));
 
         // 「難易度」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.singleChecks.length; i++) {
@@ -114,24 +122,24 @@ public class MainActivity extends AppCompatActivity {
                         throw new IllegalStateException("Subject chart has already popped, but cannot be gotten.");
                     }
 
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.pop_result, subject), true)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.result, subject), true)
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
                 } else if (Arrays.equals(CommonParams.singleChecks, new boolean[CommonParams.singleChecks.length]) && Arrays.equals(CommonParams.doubleChecks, new boolean[CommonParams.doubleChecks.length]) && !CommonParams.coopCheck) {
                     // 「難易度」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.difficulty)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
                 } else if (Arrays.equals(CommonParams.typeChecks, new boolean[CommonParams.typeChecks.length])) {
                     // 「種別」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.type)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
                 } else if (Arrays.equals(CommonParams.seriesChecks, new boolean[CommonParams.seriesChecks.length])) {
                     // 「シリーズ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.series)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
                 } else if (Arrays.equals(CommonParams.categoryChecks, new boolean[CommonParams.categoryChecks.length])) {
                     // 「カテゴリー」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
                     ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.category)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
                 } else {
                     // 上記以外の場合は、別スレッドでお題を出す
                     new PoppingAsyncTask(mainActivity).execute();
@@ -140,9 +148,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // AdMobの初期化
-        MobileAds.initialize(this, CommonParams.MAIN_AD_VIEW_ID);
+        MobileAds.initialize(this, CommonParams.AD_VIEW_ID_MAIN);
         final AdView mainAdView = findViewById(R.id.mainAdView);
         AdRequest request = new AdRequest.Builder().build();
         mainAdView.loadAd(request);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menuLanguage:
+            Toast.makeText(this, R.string.in_preparation, Toast.LENGTH_SHORT).show();
+            return true;
+        case R.id.menuLicense:
+            Toast.makeText(this, R.string.in_preparation, Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

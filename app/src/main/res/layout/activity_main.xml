@@ -6,31 +6,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/mainTabLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp"
-        android:background="@color/primaryColor"
-        ads:tabTextAppearance="@style/TabLayoutText"
-        app:tabMode="scrollable" />
+        android:background="@color/primaryColor">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/mainTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:tabTextAppearance="@style/TabLayoutText"
+            app:tabMode="scrollable" />
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/mainViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/mainButtonPop"
-        android:layout_below="@id/mainTabLayout"/>
+        android:layout_below="@id/mainToolBar"/>
 
     <Button
         android:id="@+id/mainButtonPop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/mainPoppingLayout"
-        android:text="@string/pop"
-        android:textSize="18sp"
-        android:theme="@style/ButtonColor" />
+        android:text="@string/take"
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:id="@+id/mainPoppingLayout"
@@ -45,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:text="@string/old_pop"
+            android:text="@string/last_taking_date"
             android:textSize="12sp"/>
 
         <ProgressBar
@@ -62,5 +67,5 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/main_ad_view_id"/>
+        ads:adUnitId="@string/ad_view_id_main"/>
 </RelativeLayout>

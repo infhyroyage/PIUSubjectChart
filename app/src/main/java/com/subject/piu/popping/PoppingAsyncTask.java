@@ -13,8 +13,6 @@ import com.subject.piu.CommonParams;
 import com.subject.piu.chart.ChartChooser;
 import com.subject.piu.main.MainActivity;
 
-import org.jsoup.HttpStatusException;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.ConnectException;
@@ -80,7 +78,7 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
         try {
             String subject = ChartChooser.execute(mainActivity);
             if (subject != null) {
-                message = mainActivity.getString(R.string.pop_result, subject);
+                message = mainActivity.getString(R.string.result, subject);
                 isShared = true;
 
                 // 取得日付と、取得したお題の譜面の文字列を保存する
@@ -90,7 +88,7 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
                         .apply();
             } else {
                 // 該当する譜面が1つも存在しなかった(=messageがnullの)場合のメッセージを取得する
-                message = mainActivity.getString(R.string.pop_not_found);
+                message = mainActivity.getString(R.string.error_not_found);
             }
         } catch (UnknownHostException e) {
             // ログ出力
@@ -104,18 +102,12 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
 
             // 途中で通信が遮断された旨のメッセージをセット
             message = mainActivity.getString(R.string.error_interrupt);
-        } catch (HttpStatusException e) {
-            // ログ出力
-            Log.e(TAG, "doInBackGround:HttpStatusException");
-
-            // URLが誤っているため通信できない旨のメッセージをセット
-            message = mainActivity.getString(R.string.error_url);
         } catch (IOException e) {
             // ログ出力
             Log.e(TAG, "doInBackGround:IOException");
 
             // システムエラーなので、非チェック例外を再スロー
-            throw new IllegalStateException("doInBackGround:IOException,msg=" + e.getMessage());
+            throw new IllegalStateException("doInBackGround:IOException,msg=" + e.getMessage(), e);
         }
 
         return new PoppingResult(message, isShared);
@@ -134,11 +126,11 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
 
         // お題を表示させるダイアログを表示
         ResultDialogFragment.newInstance(mainActivity, result.message, result.isShared)
-                .show(mainActivity.getSupportFragmentManager(), CommonParams.MAIN_ACTIVITY_DIALOG_FRAGMENT);
+                .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
 
         // 「お待ちください」のボタンを「今日のお題を出す」に変更し、そのフラグも変更する
         mainActivity.isWaited.set(false);
-        mainActivity.mainButtonPop.setText(R.string.pop);
+        mainActivity.mainButtonPop.setText(R.string.take);
 
         // 「お待ちください」のボタンと、破棄されていないSwitchをすべて有効にして押せるようにする
         for (Switch s : mainActivity.createdSwitches) {
@@ -148,7 +140,7 @@ public class PoppingAsyncTask extends AsyncTask<Void, Void, PoppingAsyncTask.Pop
 
         // 取得日付を最終取得日のテキストビューに指定
         ((TextView) mainActivity.findViewById(R.id.textViewPop))
-                .setText(mainActivity.getString(R.string.old_pop, sp.getString("oldPop", "----/--/--")));
+                .setText(mainActivity.getString(R.string.last_taking_date, sp.getString("oldPop", "----/--/--")));
     }
 
     /**

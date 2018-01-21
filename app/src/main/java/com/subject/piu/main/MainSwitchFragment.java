@@ -274,7 +274,7 @@ public class MainSwitchFragment extends Fragment {
             // このフラグメントが「その他」に対応する場合
             // PP解禁譜面のSwitchを追加
             s = new Switch(mainActivity);
-            s.setText(CommonParams.PP_UNLOCKED_STEP);
+            s.setText(R.string.other_pp_unlocked_step);
             s.setChecked(CommonParams.ppUnlockedStepCheck);
             s.setEnabled(!mainActivity.isWaited.get());
             s.setPadding((int) (20 * dp), (int) (10 * dp), (int) (20 * dp), (int) (10 * dp));
@@ -299,7 +299,7 @@ public class MainSwitchFragment extends Fragment {
 
             // AM.PASS使用時限定譜面のSwitchを追加
             s = new Switch(mainActivity);
-            s.setText(CommonParams.AM_PASS_ONLY_USED_STEP);
+            s.setText(R.string.other_am_pass_used_step);
             s.setChecked(CommonParams.amPassOnlyUsedStepCheck);
             s.setEnabled(!mainActivity.isWaited.get());
             s.setPadding((int) (20 * dp), (int) (10 * dp), (int) (20 * dp), (int) (10 * dp));

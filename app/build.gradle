@@ -6,8 +6,8 @@ android {
         applicationId "com.subject.piu"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20180119
-        versionName "20180119"
+        versionCode 20180121
+        versionName "20180121"
     }
     buildTypes {
         release {
@@ -42,4 +42,5 @@ repositories {
     mavenCentral()
 }
 
+// Firebase Admob
 apply plugin: 'com.google.gms.google-services'
