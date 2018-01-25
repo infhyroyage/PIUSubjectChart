@@ -7,8 +7,8 @@ android {
         applicationId "com.subject.piu"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 20180121
-        versionName "20180121"
+        versionCode 20180125
+        versionName "20180125"
     }
     buildTypes {
         release {

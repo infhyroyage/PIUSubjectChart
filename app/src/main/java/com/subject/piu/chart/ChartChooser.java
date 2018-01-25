@@ -126,7 +126,7 @@ public abstract class ChartChooser {
         sp.edit()
                 .putString("subject", subject)
                 .putString("type", uc.type)
-                .putString("lastTakingDate", new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime()))
+                .putString("lastTakingDate", new SimpleDateFormat("yyyy/MM/dd", Locale.US).format(Calendar.getInstance().getTime()))
                 .apply();
 
         return message;

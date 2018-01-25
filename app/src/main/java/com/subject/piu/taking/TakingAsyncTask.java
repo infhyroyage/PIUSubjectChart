@@ -130,7 +130,7 @@ public class TakingAsyncTask extends AsyncTask<Void, Void, TakingAsyncTask.Resul
 
         // 取得日付を最終取得日のテキストビューに指定
         ((TextView) mainActivity.findViewById(R.id.textViewTaking))
-                .setText(mainActivity.getString(R.string.last_taking_date, sp.getString("oldPop", "----/--/--")));
+                .setText(mainActivity.getString(R.string.last_taking_date, sp.getString("lastTakingDate", "----/--/--")));
     }
 
     /**
@@ -145,7 +145,7 @@ public class TakingAsyncTask extends AsyncTask<Void, Void, TakingAsyncTask.Resul
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 
         // 現在の日付と、以前にお題を出した日付の文字列を取得
-        String nowTakingDate = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        String nowTakingDate = new SimpleDateFormat("yyyy/MM/dd", Locale.US).format(Calendar.getInstance().getTime());
         String lastTakingDate = sp.getString("lastTakingDate", "----/--/--");
 
         if (nowTakingDate.equals(lastTakingDate)) {

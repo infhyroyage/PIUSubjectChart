@@ -46,7 +46,6 @@ class UnitChart {
         } else {
             this.type = "";
         }
-        this.type = type;
         this.isDouble = isDouble;
         this.isPerformance = isPerformance;
 
