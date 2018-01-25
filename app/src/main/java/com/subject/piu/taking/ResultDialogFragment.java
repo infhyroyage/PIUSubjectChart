@@ -1,4 +1,4 @@
-package com.subject.piu.popping;
+package com.subject.piu.taking;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -15,7 +15,7 @@ import com.subject.piu.main.MainActivity;
  * お題を出した後の結果を表示するダイアログのクラス
  */
 public class ResultDialogFragment extends AppCompatDialogFragment {
-    // 呼びだされたMainActivityのインスタンス
+    // MainActivityのインスタンス
     private MainActivity mainActivity;
 
     // このダイアログのメッセージ

@@ -1,6 +1,7 @@
 <resources>
     <string name="ad_view_id_main">ca-app-pub-2231903967147229/5376235403</string>
     <string name="app_name">ODAI IT UP</string>
+    <string name="cancel">Cancel</string>
     <string name="category">CATEGORY</string>
     <string name="difficulty">DIFFICULTY</string>
     <string name="difficulty_coop">COOP</string>
@@ -12,14 +13,18 @@
     <string name="error_not_found">Steps matching your switching conditions cannot be found.\nPlease change them.</string>
     <string name="getting_charts">Please Wait…</string>
     <string name="in_preparation">In Preparation…</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>日本語</item>
+    </string-array>
     <string name="last_taking_date">Last Taking Date : %1$s</string>
-    <string name="menu_language">Language</string>
     <string name="menu_license">License</string>
     <string name="ok">OK</string>
     <string name="other">OTHER</string>
-    <string name="other_pp_unlocked_step">Include PP unlocked steps</string>
     <string name="other_am_pass_used_step">Include AM.PASS only used steps</string>
+    <string name="other_pp_unlocked_step">Include PP unlocked steps</string>
     <string name="result">Your today\'s ODAI is %1$s.Do your best!</string>
+    <string name="result_type">Your today\'s ODAI is %1$s of %2$s.Do your best!</string>
     <string name="series">SERIES</string>
     <string name="share">Share ODAI</string>
     <string name="take">Take your today\'s ODAI</string>

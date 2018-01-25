@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.oss.licenses.plugin'
 
 android {
     compileSdkVersion 27
@@ -33,6 +34,9 @@ dependencies {
     // Firebase Admob
     implementation 'com.google.firebase:firebase-ads:11.8.0'
     implementation 'com.android.support:support-v4:27.0.2'
+
+    // Google's Open Source Notices
+    implementation 'com.google.android.gms:play-services-oss-licenses:11.8.0'
 
     // Jsoup
     implementation 'org.jsoup:jsoup:1.7.3'

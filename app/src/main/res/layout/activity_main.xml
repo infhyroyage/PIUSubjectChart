@@ -26,26 +26,26 @@
         android:id="@+id/mainViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/mainButtonPop"
+        android:layout_above="@id/mainButtonTaking"
         android:layout_below="@id/mainToolBar"/>
 
     <Button
-        android:id="@+id/mainButtonPop"
+        android:id="@+id/mainButtonTaking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/mainPoppingLayout"
+        android:layout_above="@id/mainLayoutTaking"
         android:text="@string/take"
         android:textSize="18sp"/>
 
     <LinearLayout
-        android:id="@+id/mainPoppingLayout"
+        android:id="@+id/mainLayoutTaking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_above="@id/mainAdView">
 
         <TextView
-            android:id="@+id/textViewPop"
+            android:id="@+id/textViewTaking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -54,7 +54,7 @@
             android:textSize="12sp"/>
 
         <ProgressBar
-            android:id="@+id/progressBarPop"
+            android:id="@+id/progressBarTaking"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

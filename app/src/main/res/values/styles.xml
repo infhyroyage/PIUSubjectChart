@@ -1,6 +1,16 @@
 <resources>
-    <!-- Base Theme. -->
+    <!-- MainActivity Theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="android:textColorSecondary">?android:attr/textColorPrimary</item>
+        <item name="android:textColorSecondaryInverse">?android:attr/textColorPrimaryInverse</item>
+        <item name="colorButtonNormal">@color/primaryColor</item>
+    </style>
+
+    <!-- OssLicensesMenuActivity Theme. -->
+    <style name="LicenseTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>

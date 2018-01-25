@@ -1,5 +1,6 @@
 package com.subject.piu.main;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,24 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.subject.piu.CommonParams;
 import com.subject.piu.R;
-import com.subject.piu.popping.PoppingAsyncTask;
-import com.subject.piu.popping.ResultDialogFragment;
+import com.subject.piu.taking.TakingAsyncTask;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 「今日のお題を出す」のボタンのインスタンス
      */
-    public Button mainButtonPop;
+    public Button mainButtonTaking;
 
     /**
      * アクティビティを生成する
@@ -69,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 以前にお題を出した日付の文字列を取得し、テキストビューに指定
-        String oldPop = sp.getString("oldPop", "----/--/--");
-        ((TextView) findViewById(R.id.textViewPop)).setText(getString(R.string.last_taking_date, oldPop));
+        ((TextView) findViewById(R.id.textViewTaking)).setText(getString(R.string.last_taking_date, sp.getString("lastTakingDate", "----/--/--")));
 
         // 「難易度」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.singleChecks.length; i++) {
@@ -103,73 +97,42 @@ public class MainActivity extends AppCompatActivity {
         ((TabLayout) findViewById(R.id.mainTabLayout)).setupWithViewPager(mainViewPager);
 
         // 「今日のお題を出す」のボタンにリスナーをセット
-        final MainActivity mainActivity = this;
-        mainButtonPop = findViewById(R.id.mainButtonPop);
-        mainButtonPop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 現在の日付と、以前にお題を出した日付の文字列を取得
-                String nowPop = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime());
-                String oldPop = sp.getString("oldPop", "----/--/--");
-
-                if (nowPop.equals(oldPop)) {
-                    /*
-                     * 同日に2回以上「今日のお題を出す」のボタンを押した場合は、
-                     * その場合は既に出したお題の文字列を取得してダイアログを出力する
-                     */
-                    String subject = sp.getString("subject", "");
-                    if (subject.equals("")) {
-                        throw new IllegalStateException("Subject chart has already popped, but cannot be gotten.");
-                    }
-
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.result, subject), true)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
-                } else if (Arrays.equals(CommonParams.singleChecks, new boolean[CommonParams.singleChecks.length]) && Arrays.equals(CommonParams.doubleChecks, new boolean[CommonParams.doubleChecks.length]) && !CommonParams.coopCheck) {
-                    // 「難易度」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.difficulty)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
-                } else if (Arrays.equals(CommonParams.typeChecks, new boolean[CommonParams.typeChecks.length])) {
-                    // 「種別」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.type)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
-                } else if (Arrays.equals(CommonParams.seriesChecks, new boolean[CommonParams.seriesChecks.length])) {
-                    // 「シリーズ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.series)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
-                } else if (Arrays.equals(CommonParams.categoryChecks, new boolean[CommonParams.categoryChecks.length])) {
-                    // 「カテゴリー」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
-                    ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, getString(R.string.category)), false)
-                            .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
-                } else {
-                    // 上記以外の場合は、別スレッドでお題を出す
-                    new PoppingAsyncTask(mainActivity).execute();
-                }
-            }
-        });
+        mainButtonTaking = findViewById(R.id.mainButtonTaking);
+        mainButtonTaking.setOnClickListener(new TakingAsyncTask(this));
 
         // AdMobの初期化
         MobileAds.initialize(this, CommonParams.AD_VIEW_ID_MAIN);
-        final AdView mainAdView = findViewById(R.id.mainAdView);
+        AdView mainAdView = findViewById(R.id.mainAdView);
         AdRequest request = new AdRequest.Builder().build();
         mainAdView.loadAd(request);
     }
 
+    /**
+     * メニュー画面をインフレートする
+     * @param menu メニューのインスタンス
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    /**
+     * メニュー画面で選択したメニューに対する動作を行う
+     * @param item 選択したメニューのアイテム
+     * @return メニューを選択した場合はtrue、そうではない場合はfalse
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menuLanguage:
-            Toast.makeText(this, R.string.in_preparation, Toast.LENGTH_SHORT).show();
-            return true;
         case R.id.menuLicense:
-            Toast.makeText(this, R.string.in_preparation, Toast.LENGTH_SHORT).show();
+            // ライセンス情報を表示するアクティビティにインテントする
+            OssLicensesMenuActivity.setActivityTitle(getString(R.string.menu_license));
+            startActivity(new Intent(this, OssLicensesMenuActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

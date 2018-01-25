@@ -1,5 +1,7 @@
 package com.subject.piu.chart;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 
@@ -11,9 +13,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,9 +36,9 @@ public abstract class ChartChooser {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     /**
-     * お題の譜面を1つ選択し、その文字列を取得する
+     * お題の譜面を1つ選択し、そのメッセージの文字列を作成する
      * @param mainActivity メインアクティビティのインスタンス
-     * @return お題の譜面を表した文字列、該当する譜面が存在しない場合はnull
+     * @return お題の譜面を表したメッセージの文字列
      * @throws IOException 通信時にエラーが発生した場合
      */
     public static String execute(final MainActivity mainActivity) throws IOException {
@@ -49,7 +54,7 @@ public abstract class ChartChooser {
         }
 
         // プログレスバーを取得し、最大値を設定
-        final ProgressBar progressBarRun = mainActivity.findViewById(R.id.progressBarPop);
+        final ProgressBar progressBarRun = mainActivity.findViewById(R.id.progressBarTaking);
         progressBarRun.setMax(urlList.size());
 
         // スレッドプールの生成
@@ -99,13 +104,32 @@ public abstract class ChartChooser {
 
         // 譜面リストが空だった(=該当する譜面が1つも存在しなかった)場合、nullを返す
         if (chartList.size() == 0) {
-            return null;
+            // 該当する譜面が1つも存在しなかった(=messageがnullの)場合のメッセージを取得する
+            return mainActivity.getString(R.string.error_not_found);
         }
+
+        // MainActivityのSharedPreferenceインスタンスを取得
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 
         // スクレイピングを行った譜面リストから、ランダムに1つの譜面を選ぶ
         UnitChart uc = chartList.get(new Random().nextInt(chartList.size()));
 
-        return uc.toString();
+        // 選んだ譜面とその種別を取得から、メッセージを作成する
+        String message, subject = uc.toString();
+        if (uc.type.equals("")) {
+            message = mainActivity.getString(R.string.result, subject);
+        } else {
+            message = mainActivity.getString(R.string.result_type, subject, uc.type);
+        }
+
+        // 選んだお題の譜面、その種別、選んだ日付を保存する
+        sp.edit()
+                .putString("subject", subject)
+                .putString("type", uc.type)
+                .putString("lastTakingDate", new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Calendar.getInstance().getTime()))
+                .apply();
+
+        return message;
     }
 
     // 抽象staticクラスなのでコンストラクタはprivateにする

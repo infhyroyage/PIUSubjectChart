@@ -85,8 +85,6 @@ abstract class DocumentScraper {
              * h4タグならカテゴリーが変化するのでそれを抽出する
              * h4タグのカテゴリーが「復活曲」の場合は、「Original」の曲しか存在しないので
              * カテゴリーを「Original」に変換し、「削除曲」の場合はスキップする
-             * TODO : また、h4タグのカテゴリーが「JAPANESE EDITION(日本版)限定曲」の場合は、
-             * TODO : 「その他」のタブの「日本限定譜面を含む」のチェック状態を考慮して「J-Music」に変換する
              */
             if (divHeader.tagName().equals("h3")) {
                 break;

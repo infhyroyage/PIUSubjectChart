@@ -18,7 +18,7 @@ class UnitChart {
     private int difficulty;
 
     // 種別
-    private String type;
+    String type;
 
     // Single、Doubleのフラグ
     private boolean isDouble;
@@ -37,12 +37,21 @@ class UnitChart {
     UnitChart(String name, int difficulty, String type, boolean isDouble, boolean isPerformance) {
         this.name = name;
         this.difficulty = difficulty;
+        if (type.equalsIgnoreCase(CommonParams.TYPES[1])) {
+            this.type = "REMIX";
+        } else if (type.equalsIgnoreCase(CommonParams.TYPES[2])) {
+            this.type = "FULL SONG";
+        } else if (type.equalsIgnoreCase(CommonParams.TYPES[3])) {
+            this.type = "SHORT CUT";
+        } else {
+            this.type = "";
+        }
         this.type = type;
         this.isDouble = isDouble;
         this.isPerformance = isPerformance;
 
         // ログ出力
-        Log.d(TAG, "name=" + name + ",difficulty=" + difficulty + ",type=" + type + ",isDouble=" + isDouble + ",isPerformance=" + isPerformance);
+        Log.d(TAG, "name=" + name + ",difficulty=" + difficulty + ",type=" + this.type + ",isDouble=" + isDouble + ",isPerformance=" + isPerformance);
     }
 
     /**
@@ -64,18 +73,8 @@ class UnitChart {
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();
-        if (type.equals("COOP")) {
-            strBuilder.append("COOPの");
-            strBuilder.append(name);
-        } else {
-            if (type.equalsIgnoreCase(CommonParams.TYPES[1])) {
-                strBuilder.append("REMIXの");
-            } else if (type.equalsIgnoreCase(CommonParams.TYPES[2])) {
-                strBuilder.append("FULL SONGの");
-            } else if (type.equalsIgnoreCase(CommonParams.TYPES[3])) {
-                strBuilder.append("SHORT CUTの");
-            }
-            strBuilder.append(name);
+        strBuilder.append(name);
+        if (!type.equals("COOP")) {
             strBuilder.append((isDouble) ? " Double " : " Single ");
             strBuilder.append((isPerformance) ? "Performance " : "");
             strBuilder.append(difficulty);

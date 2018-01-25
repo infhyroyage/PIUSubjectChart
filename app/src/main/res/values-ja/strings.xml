@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="cancel">キャンセル</string>
     <string name="category">カテゴリー</string>
     <string name="difficulty">難易度</string>
     <string name="error_all_off">%1$sタブですべてOFFにセットされています。\nON/OFF設定を確かめてください。</string>
@@ -9,12 +10,12 @@
     <string name="getting_charts">お待ちください…</string>
     <string name="in_preparation">準備中…</string>
     <string name="last_taking_date">最終取得日 : %1$s</string>
-    <string name="menu_language">言語</string>
     <string name="menu_license">ライセンス</string>
     <string name="other">その他</string>
-    <string name="other_pp_unlocked_step">PP解禁譜面を含む</string>
     <string name="other_am_pass_used_step">AM.PASS使用時限定譜面を含む</string>
+    <string name="other_pp_unlocked_step">PP解禁譜面を含む</string>
     <string name="result">今日のお題は%1$sです。頑張ってください！</string>
+    <string name="result_type">今日のお題は%2$sの%1$sです。頑張ってください！</string>
     <string name="series">シリーズ</string>
     <string name="share">お題を共有</string>
     <string name="take">今日のお題を出す</string>
