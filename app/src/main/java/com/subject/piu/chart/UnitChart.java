@@ -17,7 +17,7 @@ class UnitChart {
     // 難易度
     private int difficulty;
 
-    // 種別
+    // タイプ
     String type;
 
     // Single、Doubleのフラグ
@@ -30,7 +30,7 @@ class UnitChart {
      * COOP譜面以外のコンストラクタ
      * @param name 曲名
      * @param difficulty 難易度
-     * @param type 種別
+     * @param type タイプ
      * @param isDouble Single、Doubleのフラグ
      * @param isPerformance Performance譜面のフラグ
      */

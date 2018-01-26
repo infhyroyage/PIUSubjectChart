@@ -28,12 +28,12 @@ abstract class DocumentScraper {
         List<UnitChart> chartSubList = new ArrayList<>();
 
         /*
-         * 各シリーズのHTMLドキュメントの中にあるh3タグから種別を取得し、以下のいずれも異なる場合はスキップする
+         * 各シリーズのHTMLドキュメントの中にあるh3タグからタイプを取得し、以下のいずれも異なる場合はスキップする
          *  ・NORMAL
          *  ・REMIX
          *  ・FULL SONG
          *  ・SHORT CUT
-         *  また、「PRIME2で復活・削除した曲」の場合は、NORMALの譜面しか存在しないので、種別を「NORMAL」に書き換える
+         *  また、「PRIME2で復活・削除した曲」の場合は、NORMALの譜面しか存在しないので、タイプを「NORMAL」に書き換える
          *  また、「PRIME2でプレイ可能になったPRIME JE未収録曲」の場合は、入れ子になったh4タグをスクレイピングする
          *  また、「コメントをかく」の場合は、これ以上譜面を取得できないのでbreakする
          */
@@ -65,7 +65,7 @@ abstract class DocumentScraper {
     /**
      * 指定されたあるシリーズのHTMLドキュメントにある、h3タグをスクレイピングする
      * @param h3 あるシリーズのHTMLドキュメントにあるh3タグ
-     * @param type 上記h3タグに属する種別
+     * @param type 上記h3タグに属するタイプ
      * @return 指定されたシリーズの譜面サブリスト
      */
     private static List<UnitChart> scrapeH3(Element h3, String type) {
@@ -81,7 +81,7 @@ abstract class DocumentScraper {
             // 同階層のタグの最初の子供の最初の子供のタグを取得する
             Element divHeader = divIdx.child(0).child(0);
             /*
-             * 上記タグがh3タグなら、別の種別をスクレイピングしてしまうのでbreakする
+             * 上記タグがh3タグなら、別のタイプをスクレイピングしてしまうのでbreakする
              * h4タグならカテゴリーが変化するのでそれを抽出する
              * h4タグのカテゴリーが「復活曲」の場合は、「Original」の曲しか存在しないので
              * カテゴリーを「Original」に変換し、「削除曲」の場合はスキップする
@@ -219,7 +219,7 @@ abstract class DocumentScraper {
     /**
      * 指定されたtableタグから、tdタグをスクレイピングする
      * @param table tableタグのインスタンス
-     * @param type 上記tableタグに属する種別
+     * @param type 上記tableタグに属するタイプ
      * @return tableタグに含まれる譜面サブリスト
      */
     private static List<UnitChart> scrapeTdFromTable(Element table, String type) {
@@ -286,7 +286,7 @@ abstract class DocumentScraper {
      * 指定されたtdタグから、tdタグに含まれる譜面情報をスクレイピングする
      * @param td tdタグのインスタンス
      * @param name tdタグに属する曲名
-     * @param type tdタグに属する種別
+     * @param type tdタグに属するタイプ
      * @param isDouble Single、Doubleのフラグ
      * @param isPerformance Performance譜面のフラグ
      * @return tdタグに含まれる譜面サブリスト
@@ -401,7 +401,7 @@ abstract class DocumentScraper {
     }
 
     /**
-     * 「種別」のチェック状態と、指定されたh3/h4タグに属する種別における
+     * 「タイプ」のチェック状態と、指定されたh3/h4タグに属するタイプにおける
      * 以下のいずれかの文字列との一致状態から、スキップするかどうか判別する
      *  ・NORMAL
      *  ・REMIX

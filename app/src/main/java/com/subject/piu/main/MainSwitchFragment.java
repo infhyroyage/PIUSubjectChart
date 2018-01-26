@@ -169,7 +169,7 @@ public class MainSwitchFragment extends Fragment {
             
             break;
         case 1:
-            // このフラグメントが「種別」に対応する場合
+            // このフラグメントが「タイプ」に対応する場合
             for (int i = 0; i < CommonParams.typeChecks.length; i++) {
                 final int idx = i;
 

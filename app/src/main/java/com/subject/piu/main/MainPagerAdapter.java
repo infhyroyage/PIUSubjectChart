@@ -53,7 +53,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
             // 「難易度」の場合
             return mainActivity.getString(R.string.difficulty);
         case 1:
-            // 「種別」の場合
+            // 「タイプ」の場合
             return mainActivity.getString(R.string.type);
         case 2:
             // 「シリーズ」の場合

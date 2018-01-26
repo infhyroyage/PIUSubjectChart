@@ -114,7 +114,7 @@ public abstract class ChartChooser {
         // スクレイピングを行った譜面リストから、ランダムに1つの譜面を選ぶ
         UnitChart uc = chartList.get(new Random().nextInt(chartList.size()));
 
-        // 選んだ譜面とその種別を取得から、メッセージを作成する
+        // 選んだ譜面とそのタイプを取得から、メッセージを作成する
         String message, subject = uc.toString();
         if (uc.type.equals("")) {
             message = mainActivity.getString(R.string.result, subject);
@@ -122,7 +122,7 @@ public abstract class ChartChooser {
             message = mainActivity.getString(R.string.result_type, subject, uc.type);
         }
 
-        // 選んだお題の譜面、その種別、選んだ日付を保存する
+        // 選んだお題の譜面、お題のタイプ、選んだ日付を保存する
         sp.edit()
                 .putString("subject", subject)
                 .putString("type", uc.type)

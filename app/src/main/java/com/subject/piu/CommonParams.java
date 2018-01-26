@@ -7,7 +7,7 @@ public abstract class CommonParams {
     /**
      * 以下で定義される、メイン画面のタブの数
      *  ・難易度
-     *  ・種別
+     *  ・タイプ
      *  ・シリーズ
      *  ・カテゴリー
      *  ・その他
@@ -36,7 +36,7 @@ public abstract class CommonParams {
     public static boolean coopCheck = false;
 
     /**
-     * 「種別」の種類
+     * 「タイプ」の種類
      */
     public static final String[] TYPES = {
             "Normal",
@@ -45,7 +45,7 @@ public abstract class CommonParams {
             "Short Cut"
     };
     /**
-     * 「種別」のチェック状態
+     * 「タイプ」のチェック状態
      */
     public static boolean[] typeChecks = new boolean[TYPES.length];
 

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             CommonParams.doubleChecks[i] = sp.getBoolean("doubleChecks[" + i + "]", true);
         }
         CommonParams.coopCheck = sp.getBoolean("coopCheck", true);
-        // 「種別」タブのチェック状態を初期化
+        // 「タイプ」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.typeChecks.length; i++) {
             CommonParams.typeChecks[i] = sp.getBoolean("typeChecks[" + i + "]", true);
         }

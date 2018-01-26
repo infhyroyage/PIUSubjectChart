@@ -174,7 +174,7 @@ public class TakingAsyncTask extends AsyncTask<Void, Void, TakingAsyncTask.Resul
             ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, mainActivity.getString(R.string.difficulty)), false)
                     .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
         } else if (Arrays.equals(CommonParams.typeChecks, new boolean[CommonParams.typeChecks.length])) {
-            // 「種別」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
+            // 「タイプ」タブのチェック状態がすべてOFFだった場合は、お題を出せない旨のダイアログを出力
             ResultDialogFragment.newInstance(mainActivity, mainActivity.getString(R.string.error_all_off, mainActivity.getString(R.string.type)), false)
                     .show(mainActivity.getSupportFragmentManager(), CommonParams.DIALOG_FRAGMENT_MAIN);
         } else if (Arrays.equals(CommonParams.seriesChecks, new boolean[CommonParams.seriesChecks.length])) {
