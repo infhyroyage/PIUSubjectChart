@@ -8,8 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,15 +55,14 @@ public class MainActivity extends AppCompatActivity {
         // メイン画面のレイアウトをビューにセット
         setContentView(R.layout.activity_main);
 
-        // ToolBarを取得し、ActionBarとしてセット
-        Toolbar mainToolBar = findViewById(R.id.mainToolBar);
-        setSupportActionBar(mainToolBar);
+        // このアクティビティのインスタンスを取得
+        final MainActivity mainActivity = this;
 
         // MainActivityのSharedPreferenceインスタンスを取得
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 以前にお題を出した日付の文字列を取得し、テキストビューに指定
-        ((TextView) findViewById(R.id.textViewTaking)).setText(getString(R.string.last_taking_date, sp.getString("lastTakingDate", "----/--/--")));
+        ((TextView) findViewById(R.id.mainTextTaking)).setText(getString(R.string.last_taking_date, sp.getString("lastTakingDate", "----/--/--")));
 
         // 「難易度」タブのチェック状態を初期化
         for (int i = 0; i < CommonParams.singleChecks.length; i++) {
@@ -100,39 +98,20 @@ public class MainActivity extends AppCompatActivity {
         mainButtonTaking = findViewById(R.id.mainButtonTaking);
         mainButtonTaking.setOnClickListener(new TakingAsyncTask(this));
 
+        // 「ライセンス表記」のテキストビューにリスナーをセット
+        findViewById(R.id.mainTextLicense).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // ライセンス情報を表示するアクティビティにインテントする
+                OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_list));
+                startActivity(new Intent(mainActivity, OssLicensesMenuActivity.class));
+            }
+        });
+
         // AdMobの初期化
         MobileAds.initialize(this, CommonParams.AD_VIEW_ID_MAIN);
         AdView mainAdView = findViewById(R.id.mainAdView);
         AdRequest request = new AdRequest.Builder().build();
         mainAdView.loadAd(request);
     }
-
-    /**
-     * メニュー画面をインフレートする
-     * @param menu メニューのインスタンス
-     * @return true
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    /**
-     * メニュー画面で選択したメニューに対する動作を行う
-     * @param item 選択したメニューのアイテム
-     * @return メニューを選択した場合はtrue、そうではない場合はfalse
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menuLicense:
-            // ライセンス情報を表示するアクティビティにインテントする
-            OssLicensesMenuActivity.setActivityTitle(getString(R.string.menu_license));
-            startActivity(new Intent(this, OssLicensesMenuActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

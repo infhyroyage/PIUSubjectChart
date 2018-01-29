@@ -129,7 +129,7 @@ public class TakingAsyncTask extends AsyncTask<Void, Void, TakingAsyncTask.Resul
         mainActivity.mainButtonTaking.setEnabled(true);
 
         // 取得日付を最終取得日のテキストビューに指定
-        ((TextView) mainActivity.findViewById(R.id.textViewTaking))
+        ((TextView) mainActivity.findViewById(R.id.mainTextTaking))
                 .setText(mainActivity.getString(R.string.last_taking_date, sp.getString("lastTakingDate", "----/--/--")));
     }
 

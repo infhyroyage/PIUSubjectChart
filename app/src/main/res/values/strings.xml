@@ -18,13 +18,13 @@
         <item>日本語</item>
     </string-array>
     <string name="last_taking_date">Last Taking Date : %1$s</string>
-    <string name="menu_license">License</string>
+    <string name="license_list"><u>License List</u></string>
     <string name="ok">OK</string>
     <string name="other">OTHER</string>
     <string name="other_am_pass_used_step">Include AM.PASS only used steps</string>
     <string name="other_pp_unlocked_step">Include PP unlocked steps</string>
-    <string name="result">Your today\'s ODAI is %1$s.Do your best!</string>
-    <string name="result_type">Your today\'s ODAI is %1$s of %2$s.Do your best!</string>
+    <string name="result">Your today\'s ODAI is %1$s.</string>
+    <string name="result_type">Your today\'s ODAI is %1$s of %2$s.</string>
     <string name="series">SERIES</string>
     <string name="share">Share ODAI</string>
     <string name="take">Take your today\'s ODAI</string>
