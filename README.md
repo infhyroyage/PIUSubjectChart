@@ -56,7 +56,7 @@ AM.PASSで認証してプレイした時に限定してプレイできる譜面�
 ### 今日のお題を出す
 ![series](images/waiting.png)  
 「今日のお題を出す」ボタンをタップすると、[PUMP IT UP (JAPAN) Wiki](http://seesaawiki.jp/piujpn/)と通信を行い、絞り込んだ全譜面データを取得する。お題はその譜面データの中から1つだけランダムに選ばれる。  
-![series](images/waiting.png)  
+![series](images/result.png)  
 お題が選ばれると、上記のようにダイアログが表示される(共有可)。
 
 ## 注意点・制限事項
