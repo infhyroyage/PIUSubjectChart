@@ -46,10 +46,10 @@
 
         <TextView
             android:id="@+id/mainTextTaking"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/mainTextLicense"
+            android:layout_toStartOf="@id/mainTextLicense"
             android:paddingLeft="5dp"
             android:paddingRight="0dp"
             android:paddingStart="5dp"

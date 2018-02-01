@@ -1,25 +1,21 @@
 <resources>
-    <string name="ad_view_id_main">ca-app-pub-2231903967147229/5376235403</string>
-    <string name="app_name">ODAI IT UP</string>
+    <string name="ad_view_id_main" translatable="false">ca-app-pub-2231903967147229/5376235403</string>
+    <string name="app_name" translatable="false">ODAI IT UP</string>
     <string name="cancel">Cancel</string>
     <string name="category">CATEGORY</string>
     <string name="difficulty">DIFFICULTY</string>
-    <string name="difficulty_coop">COOP</string>
-    <string name="difficulty_double">Double %1$d</string>
-    <string name="difficulty_single">Single %1$d</string>
+    <string name="difficulty_coop" translatable="false">COOP</string>
+    <string name="difficulty_double" translatable="false">Double %1$d</string>
+    <string name="difficulty_single" translatable="false">Single %1$d</string>
     <string name="error_all_off">You switched all OFF at %1$s\'s tab.\nPlease confirm your ON/OFF switching.</string>
     <string name="error_connection">Connection cannot be run.\nPlease confirm your connection setting.</string>
     <string name="error_interrupt">Connection was interrupted in the middle.\nPlease take again at the connectable environment.</string>
     <string name="error_not_found">Steps matching your switching conditions cannot be found.\nPlease change them.</string>
     <string name="getting_charts">Please Wait…</string>
     <string name="in_preparation">In Preparation…</string>
-    <string-array name="languages">
-        <item>English</item>
-        <item>日本語</item>
-    </string-array>
     <string name="last_taking_date">Last Taking Date : %1$s</string>
     <string name="license_list"><u>License List</u></string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="other">OTHER</string>
     <string name="other_am_pass_used_step">Include AM.PASS only used steps</string>
     <string name="other_pp_unlocked_step">Include PP unlocked steps</string>
