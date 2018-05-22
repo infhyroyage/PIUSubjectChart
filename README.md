@@ -3,7 +3,7 @@
 Pump It Upでの今日のお題を表示・共有するAndroidアプリケーション。譜面データは[PUMP IT UP (JAPAN) Wiki](http://seesaawiki.jp/piujpn/)から取得する。
 
 ## インストール
-[ここから(デバッグ用)](https://github.com/infhyroyage/PIUSubjectChart/raw/master/app/build/outputs/apk/debug/app-debug.apk)からapkファイルをダウンロードし、**Android OS 4.0.3以上**でapkファイルを展開。
+[ここ](https://github.com/infhyroyage/PIUSubjectChart/raw/master/app/release/app-release.apk)からapkファイルをダウンロードし、**Android OS 4.0.3以上**でapkファイルを展開。
 
 ## 使い方
 ![usage](images/usage.png)  
@@ -50,7 +50,7 @@ Pump It Up PRIME2の公式サイトからPPを消費して解禁する譜面で�
 AM.PASSで認証してプレイした時に限定してプレイできる譜面で絞り込むことができる。
 
 ### 今日のお題を出す
-![result](images/result.png)  
+![result](images/result.png)  
 「今日のお題を出す」ボタンをタップすると、[PUMP IT UP (JAPAN) Wiki](http://seesaawiki.jp/piujpn/)と通信を行い、絞り込んだ全譜面データを取得する。お題はその譜面データの中から1つだけランダムに選ばれる。  
 お題が選ばれると、上記のようにダイアログが表示される(共有可)。
 
